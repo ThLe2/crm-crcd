@@ -1,0 +1,2911 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TMK Performances — Plateforme de simulation Relation Client</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CHARTE GRAPHIQUE TMK PERFORMANCES
+   Bleu marine profond + orange corail (logo) / blanc / gris perle
+   ============================================================ */
+:root{
+  --tmk-navy:        #1a2e5c;     /* couleur principale - identité TMK */
+  --tmk-navy-2:      #243d75;     /* navy secondaire un peu + clair */
+  --tmk-navy-3:      #0e1d3f;     /* navy foncé pour titres */
+  --tmk-orange:      #f26749;     /* accent corail/orange du logo */
+  --tmk-orange-2:    #e95234;     /* orange hover */
+  --tmk-yellow:      #f7b733;     /* jaune secondaire (énergie) */
+  --tmk-green:       #16a085;     /* validation / succès */
+  --tmk-red:         #c0392b;     /* erreur / refus */
+  --tmk-blue-soft:   #e8edf7;     /* fond doux navy */
+  --tmk-orange-soft: #fdece6;     /* fond doux orange */
+
+  --bg:              #f5f6fa;     /* fond app */
+  --bg-card:         #ffffff;
+  --bg-muted:        #f0f2f7;
+  --border:          #e1e5ee;
+  --border-strong:   #c7cee0;
+  --text:            #1a2236;
+  --text-muted:      #6b7280;
+  --text-soft:       #9aa0b1;
+
+  --shadow-sm: 0 1px 2px rgba(15,23,42,.06), 0 1px 1px rgba(15,23,42,.04);
+  --shadow:    0 4px 12px rgba(15,23,42,.08), 0 1px 3px rgba(15,23,42,.06);
+  --shadow-lg: 0 12px 32px rgba(15,23,42,.12), 0 4px 12px rgba(15,23,42,.08);
+
+  --radius-sm: 6px;
+  --radius:    10px;
+  --radius-lg: 16px;
+
+  --font-sans:    'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{
+  font-family:var(--font-sans);
+  font-size:14.5px;
+  line-height:1.55;
+  color:var(--text);
+  background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+h1,h2,h3,h4{margin:0;line-height:1.25;color:var(--tmk-navy-3)}
+h1{font-size:1.6rem;font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.25rem;font-weight:700}
+h3{font-size:1.05rem;font-weight:700}
+h4{font-size:.95rem;font-weight:700}
+p{margin:.5rem 0}
+a{color:var(--tmk-navy);text-decoration:none}
+a:hover{color:var(--tmk-orange)}
+
+/* ============================================================
+   ÉCRAN DE CONNEXION
+   ============================================================ */
+.login-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1.5rem;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(242,103,73,.08) 0%, transparent 50%),
+    radial-gradient(circle at 85% 100%, rgba(26,46,92,.08) 0%, transparent 50%),
+    linear-gradient(135deg, #f5f6fa 0%, #e8edf7 100%);
+}
+.login-card{
+  width:100%;
+  max-width:480px;
+  background:var(--bg-card);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);
+  padding:2.5rem 2.25rem;
+  position:relative;
+  overflow:hidden;
+}
+.login-card::before{
+  content:"";
+  position:absolute; top:0; left:0; right:0; height:6px;
+  background:linear-gradient(90deg, var(--tmk-navy) 0%, var(--tmk-orange) 100%);
+}
+.login-logo{
+  display:flex; align-items:center; justify-content:center; gap:.6rem;
+  margin-bottom:1.5rem;
+}
+.login-logo .badge{
+  font-family:var(--font-display);
+  font-size:1.6rem;
+  font-weight:400;
+  letter-spacing:.02em;
+  color:var(--tmk-navy);
+}
+.login-logo .badge .accent{color:var(--tmk-orange)}
+.login-subtitle{
+  text-align:center;
+  color:var(--text-muted);
+  font-size:.92rem;
+  margin-bottom:2rem;
+}
+.role-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.85rem;
+  margin-bottom:1.5rem;
+}
+.role-btn{
+  border:2px solid var(--border);
+  background:var(--bg-card);
+  border-radius:var(--radius);
+  padding:1.1rem .8rem;
+  text-align:center;
+  transition:all .18s ease;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.5rem;
+  font-weight:600;
+  font-size:.92rem;
+  color:var(--text);
+}
+.role-btn .role-icon{
+  font-size:1.6rem;
+  line-height:1;
+}
+.role-btn:hover{
+  border-color:var(--tmk-navy);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow);
+}
+.role-btn.active{
+  border-color:var(--tmk-navy);
+  background:var(--tmk-navy);
+  color:#fff;
+}
+.role-btn.active.formateur{
+  border-color:var(--tmk-orange);
+  background:var(--tmk-orange);
+}
+.form-field{margin-bottom:1rem}
+.form-field label{
+  display:block;
+  font-size:.82rem;
+  font-weight:600;
+  color:var(--text-muted);
+  margin-bottom:.35rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.form-field input, .form-field textarea, .form-field select{
+  width:100%;
+  padding:.7rem .85rem;
+  border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm);
+  background:#fff;
+  outline:none;
+  transition:border-color .15s, box-shadow .15s;
+}
+.form-field input:focus, .form-field textarea:focus, .form-field select:focus{
+  border-color:var(--tmk-navy);
+  box-shadow:0 0 0 3px rgba(26,46,92,.12);
+}
+.btn-primary{
+  width:100%;
+  padding:.85rem 1rem;
+  border:none;
+  border-radius:var(--radius-sm);
+  background:var(--tmk-navy);
+  color:#fff;
+  font-weight:700;
+  font-size:.95rem;
+  letter-spacing:.01em;
+  transition:background .15s, transform .1s;
+}
+.btn-primary:hover{background:var(--tmk-navy-2)}
+.btn-primary:active{transform:scale(.98)}
+.btn-primary.orange{background:var(--tmk-orange)}
+.btn-primary.orange:hover{background:var(--tmk-orange-2)}
+.login-footer{
+  margin-top:1.5rem;
+  text-align:center;
+  font-size:.78rem;
+  color:var(--text-soft);
+}
+
+/* ============================================================
+   APP - HEADER + NAVIGATION
+   ============================================================ */
+.app{display:none}
+.app.visible{display:block}
+
+.app-header{
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:50;
+  box-shadow:var(--shadow-sm);
+}
+.app-header-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:.65rem 1.5rem;
+  max-width:1480px;
+  margin:0 auto;
+}
+.brand{
+  display:flex;align-items:center;gap:.6rem;
+}
+.brand-mark{
+  font-family:var(--font-display);
+  font-size:1.35rem;
+  color:var(--tmk-navy);
+}
+.brand-mark .accent{color:var(--tmk-orange)}
+.brand-tagline{
+  font-size:.72rem;
+  color:var(--text-muted);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  border-left:1px solid var(--border);
+  padding-left:.7rem;
+  margin-left:.2rem;
+}
+.user-chip{
+  display:flex;align-items:center;gap:.7rem;
+  font-size:.88rem;
+}
+.user-chip .who{
+  display:flex;flex-direction:column;align-items:flex-end;line-height:1.2;
+}
+.user-chip .who strong{color:var(--tmk-navy-3);font-weight:700;font-size:.9rem}
+.user-chip .who small{color:var(--text-muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+.avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg, var(--tmk-navy) 0%, var(--tmk-navy-2) 100%);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.85rem;
+}
+.avatar.formateur{background:linear-gradient(135deg, var(--tmk-orange) 0%, var(--tmk-yellow) 100%)}
+.btn-ghost{
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:.45rem .75rem;
+  color:var(--text-muted);
+  font-size:.82rem;
+  font-weight:600;
+  transition:all .15s;
+}
+.btn-ghost:hover{
+  background:var(--bg-muted);
+  color:var(--tmk-navy);
+  border-color:var(--border-strong);
+}
+
+.app-nav{
+  background:var(--tmk-navy-3);
+  color:#fff;
+}
+.app-nav-inner{
+  display:flex;
+  gap:0;
+  max-width:1480px;
+  margin:0 auto;
+  padding:0 1.5rem;
+  overflow-x:auto;
+}
+.nav-tab{
+  background:transparent;
+  border:none;
+  color:rgba(255,255,255,.7);
+  padding:.85rem 1.1rem;
+  font-size:.88rem;
+  font-weight:600;
+  position:relative;
+  white-space:nowrap;
+  transition:color .15s;
+  border-bottom:3px solid transparent;
+}
+.nav-tab:hover{color:#fff}
+.nav-tab.active{
+  color:#fff;
+  border-bottom-color:var(--tmk-orange);
+}
+
+.app-main{
+  max-width:1480px;
+  margin:0 auto;
+  padding:1.5rem;
+}
+
+/* ============================================================
+   COMPOSANTS GENERAUX
+   ============================================================ */
+.card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.25rem;
+  box-shadow:var(--shadow-sm);
+}
+.card.no-pad{padding:0}
+.card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1rem;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+.card-header h2{font-size:1.08rem}
+.section-title{
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--text-muted);
+  font-weight:700;
+  margin:0 0 .65rem;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.5rem .85rem;
+  background:var(--tmk-navy);
+  color:#fff;
+  border:none;
+  border-radius:var(--radius-sm);
+  font-weight:600;font-size:.85rem;
+  transition:all .15s;
+}
+.btn:hover{background:var(--tmk-navy-2)}
+.btn.orange{background:var(--tmk-orange)}
+.btn.orange:hover{background:var(--tmk-orange-2)}
+.btn.outline{
+  background:transparent;color:var(--tmk-navy);border:1px solid var(--tmk-navy);
+}
+.btn.outline:hover{background:var(--tmk-blue-soft)}
+.btn.danger{background:var(--tmk-red)}
+.btn.danger:hover{background:#a93226}
+.btn.sm{padding:.35rem .6rem;font-size:.78rem}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+.badge-pill{
+  display:inline-block;
+  font-size:.72rem;font-weight:700;
+  padding:.18rem .55rem;
+  border-radius:999px;
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.pill-navy{background:var(--tmk-blue-soft);color:var(--tmk-navy)}
+.pill-orange{background:var(--tmk-orange-soft);color:var(--tmk-orange-2)}
+.pill-green{background:#e6f6f1;color:var(--tmk-green)}
+.pill-yellow{background:#fef4e0;color:#b8860b}
+.pill-grey{background:var(--bg-muted);color:var(--text-muted)}
+
+/* Grid layouts */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:960px){
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+}
+
+.kpi{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1rem 1.1rem;
+  display:flex;flex-direction:column;gap:.25rem;
+  position:relative;overflow:hidden;
+}
+.kpi::before{
+  content:"";position:absolute;top:0;left:0;height:100%;width:4px;
+  background:var(--tmk-navy);
+}
+.kpi.orange::before{background:var(--tmk-orange)}
+.kpi.green::before{background:var(--tmk-green)}
+.kpi.yellow::before{background:var(--tmk-yellow)}
+.kpi-label{font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);font-weight:700}
+.kpi-value{font-size:1.7rem;font-weight:800;color:var(--tmk-navy-3);line-height:1}
+.kpi-sub{font-size:.78rem;color:var(--text-muted)}
+
+/* Tables */
+table.table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.88rem;
+}
+table.table th{
+  text-align:left;
+  font-weight:700;
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  color:var(--text-muted);
+  padding:.55rem .75rem;
+  border-bottom:2px solid var(--border);
+  background:var(--bg-muted);
+}
+table.table td{
+  padding:.65rem .75rem;
+  border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+table.table tr:hover td{background:#fafbff}
+
+/* Modal */
+.modal-backdrop{
+  position:fixed;inset:0;
+  background:rgba(15,23,42,.55);
+  backdrop-filter:blur(2px);
+  display:none;
+  align-items:center;justify-content:center;
+  z-index:200;
+  padding:1rem;
+}
+.modal-backdrop.visible{display:flex}
+.modal{
+  background:#fff;
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);
+  width:100%;
+  max-width:720px;
+  max-height:90vh;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.modal.large{max-width:1080px}
+.modal.small{max-width:460px}
+.modal-head{
+  padding:1rem 1.25rem;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;
+}
+.modal-head h3{font-size:1.05rem}
+.modal-close{
+  background:transparent;border:none;
+  font-size:1.5rem;line-height:1;color:var(--text-muted);
+  cursor:pointer;padding:.2rem .4rem;border-radius:var(--radius-sm);
+}
+.modal-close:hover{background:var(--bg-muted);color:var(--tmk-navy)}
+.modal-body{
+  padding:1.25rem;
+  overflow-y:auto;
+  flex:1;
+}
+.modal-foot{
+  padding:1rem 1.25rem;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:flex-end;gap:.6rem;
+  background:var(--bg-muted);
+}
+
+/* Toast */
+.toast-zone{
+  position:fixed;
+  bottom:1.5rem;right:1.5rem;
+  z-index:300;
+  display:flex;flex-direction:column;gap:.5rem;
+  pointer-events:none;
+}
+.toast{
+  background:var(--tmk-navy-3);
+  color:#fff;
+  padding:.7rem 1.1rem;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-lg);
+  font-size:.88rem;
+  font-weight:500;
+  animation:slideIn .25s ease;
+  max-width:340px;
+  pointer-events:auto;
+  display:flex;align-items:center;gap:.5rem;
+}
+.toast.success{background:var(--tmk-green)}
+.toast.error{background:var(--tmk-red)}
+.toast.warn{background:var(--tmk-yellow);color:#3a2a00}
+@keyframes slideIn{
+  from{transform:translateX(20px);opacity:0}
+  to{transform:translateX(0);opacity:1}
+}
+
+/* ============================================================
+   ACCUEIL STAGIAIRE
+   ============================================================ */
+.welcome-banner{
+  background:linear-gradient(135deg, var(--tmk-navy) 0%, var(--tmk-navy-2) 100%);
+  color:#fff;
+  border-radius:var(--radius-lg);
+  padding:1.75rem 2rem;
+  margin-bottom:1.5rem;
+  position:relative;
+  overflow:hidden;
+}
+.welcome-banner::after{
+  content:"";
+  position:absolute;
+  top:-30px;right:-30px;
+  width:200px;height:200px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(242,103,73,.25) 0%, transparent 70%);
+}
+.welcome-banner h1{color:#fff;margin-bottom:.4rem}
+.welcome-banner p{margin:0;color:rgba(255,255,255,.85);font-size:.95rem;max-width:680px;position:relative;z-index:1}
+.welcome-banner .actions{margin-top:1.1rem;display:flex;gap:.6rem;flex-wrap:wrap;position:relative;z-index:1}
+.welcome-banner .btn{background:#fff;color:var(--tmk-navy);font-weight:700}
+.welcome-banner .btn:hover{background:var(--tmk-orange-soft);color:var(--tmk-orange-2)}
+.welcome-banner .btn.orange{background:var(--tmk-orange);color:#fff}
+.welcome-banner .btn.orange:hover{background:var(--tmk-orange-2)}
+
+/* Grid d'activités */
+.activity-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:1rem;
+  margin-bottom:1.25rem;
+}
+.activity-tile{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.25rem 1.1rem;
+  text-align:left;
+  cursor:pointer;
+  transition:all .18s ease;
+  display:flex;flex-direction:column;gap:.5rem;
+  position:relative;overflow:hidden;
+  min-height:130px;
+}
+.activity-tile::before{
+  content:"";
+  position:absolute;
+  bottom:-30px;right:-30px;
+  width:90px;height:90px;border-radius:50%;
+  background:var(--tmk-blue-soft);
+  transition:all .18s ease;
+  z-index:0;
+}
+.activity-tile:hover{
+  border-color:var(--tmk-navy);
+  transform:translateY(-3px);
+  box-shadow:var(--shadow);
+}
+.activity-tile:hover::before{background:var(--tmk-orange-soft);transform:scale(1.4)}
+.activity-tile > *{position:relative;z-index:1}
+.activity-tile .num{
+  font-family:var(--font-display);
+  font-size:1.7rem;
+  color:var(--tmk-navy);
+  line-height:1;
+}
+.activity-tile.active-tile{border-color:var(--tmk-orange);background:var(--tmk-orange-soft)}
+.activity-tile.active-tile::before{background:rgba(242,103,73,.22)}
+.activity-tile h4{color:var(--tmk-navy-3)}
+.activity-tile small{color:var(--text-muted);font-size:.8rem}
+
+/* ============================================================
+   CRM - SIMULATION D'APPEL
+   ============================================================ */
+.crm{
+  display:grid;
+  grid-template-columns:340px 1fr;
+  gap:1rem;
+  align-items:start;
+}
+@media(max-width:1100px){
+  .crm{grid-template-columns:1fr}
+}
+.crm-aside{
+  position:sticky;top:5rem;
+}
+.client-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.client-card-head{
+  background:linear-gradient(135deg, var(--tmk-navy) 0%, var(--tmk-navy-2) 100%);
+  color:#fff;padding:1rem 1.1rem;
+}
+.client-card-head .ref{
+  font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;
+  color:rgba(255,255,255,.7);font-weight:700;
+}
+.client-card-head h3{
+  color:#fff;font-size:1.1rem;margin-top:.15rem;
+}
+.client-card-head .society{
+  color:rgba(255,255,255,.85);font-size:.85rem;
+}
+.client-card-body{
+  padding:1rem 1.1rem;
+}
+.field-row{
+  display:flex;justify-content:space-between;
+  padding:.4rem 0;
+  border-bottom:1px dashed var(--border);
+  font-size:.85rem;
+}
+.field-row:last-child{border-bottom:none}
+.field-row .lbl{color:var(--text-muted);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+.field-row .val{color:var(--text);text-align:right;font-weight:500;max-width:62%;word-break:break-word}
+.field-row .val.mono{font-variant-numeric:tabular-nums}
+
+.action-bar{
+  display:flex;flex-wrap:wrap;gap:.4rem;
+  padding:.85rem 1.1rem;
+  border-top:1px solid var(--border);
+  background:var(--bg-muted);
+}
+
+/* History timeline */
+.timeline{
+  list-style:none;padding:0;margin:0;
+  position:relative;
+}
+.timeline::before{
+  content:"";position:absolute;left:11px;top:6px;bottom:6px;
+  width:2px;background:var(--border);
+}
+.timeline li{
+  position:relative;
+  padding:.4rem 0 .8rem 2.2rem;
+  font-size:.88rem;
+}
+.timeline li::before{
+  content:"";
+  position:absolute;left:5px;top:.55rem;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--tmk-navy);
+  border:3px solid #fff;
+  box-shadow:0 0 0 1px var(--border);
+}
+.timeline li.new::before{background:var(--tmk-orange)}
+.timeline .when{
+  font-size:.74rem;color:var(--text-muted);font-weight:600;
+  text-transform:uppercase;letter-spacing:.05em;
+}
+.timeline .what{display:block;color:var(--text);margin-top:.1rem}
+.timeline .who-edit{font-size:.72rem;color:var(--text-soft);margin-top:.1rem}
+.timeline-empty{
+  text-align:center;padding:1.25rem;color:var(--text-muted);
+  background:var(--bg-muted);border-radius:var(--radius-sm);
+  font-size:.85rem;font-style:italic;
+}
+
+/* Mission box */
+.mission-box{
+  background:linear-gradient(135deg, var(--tmk-orange-soft) 0%, #fff5ed 100%);
+  border:1px solid #f9c4b3;
+  border-left:4px solid var(--tmk-orange);
+  border-radius:var(--radius);
+  padding:1rem 1.1rem;
+  margin-bottom:1rem;
+}
+.mission-box h4{
+  font-size:.78rem;color:var(--tmk-orange-2);
+  text-transform:uppercase;letter-spacing:.05em;
+  margin-bottom:.4rem;
+}
+.mission-box p{margin:0;color:var(--tmk-navy-3);font-size:.92rem;line-height:1.55}
+
+/* Tabs (sub-tabs inside main panel) */
+.subtabs{
+  display:flex;gap:.25rem;
+  border-bottom:1px solid var(--border);
+  margin-bottom:1rem;
+}
+.subtab{
+  background:transparent;border:none;
+  padding:.6rem .9rem;
+  font-size:.85rem;font-weight:600;
+  color:var(--text-muted);
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+  transition:all .15s;
+}
+.subtab:hover{color:var(--tmk-navy)}
+.subtab.active{
+  color:var(--tmk-navy);
+  border-bottom-color:var(--tmk-orange);
+}
+
+/* ============================================================
+   FORM-LIKE INPUTS in panels
+   ============================================================ */
+.input-row{display:flex;gap:.5rem;align-items:flex-start;flex-wrap:wrap}
+.input-row > *{flex:1;min-width:0}
+textarea{min-height:80px;resize:vertical}
+.well{
+  background:var(--bg-muted);
+  border-radius:var(--radius-sm);
+  padding:1rem;
+}
+
+/* Checkbox / radio group */
+.checkbox-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:.5rem;
+}
+.checkbox-grid label{
+  display:flex;align-items:center;gap:.5rem;
+  background:#fff;border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:.55rem .75rem;
+  font-size:.85rem;cursor:pointer;
+  transition:all .12s;
+}
+.checkbox-grid label:hover{border-color:var(--tmk-navy)}
+.checkbox-grid input[type=checkbox]:checked + span{font-weight:700;color:var(--tmk-navy)}
+
+/* ============================================================
+   ADMIN (formateur) - TABLES + EDITION
+   ============================================================ */
+.admin-toolbar{
+  display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;
+  margin-bottom:1rem;
+}
+.admin-toolbar .search{
+  flex:1;min-width:200px;
+  padding:.55rem .85rem;
+  border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm);
+  font-size:.88rem;
+}
+.admin-toolbar .search:focus{
+  outline:none;border-color:var(--tmk-navy);box-shadow:0 0 0 3px rgba(26,46,92,.12);
+}
+
+.admin-table-wrap{
+  background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;
+}
+.admin-table-wrap .scroll{
+  max-height:65vh;overflow:auto;
+}
+
+.row-actions{display:flex;gap:.3rem}
+.icon-btn{
+  background:transparent;border:1px solid transparent;
+  padding:.3rem .5rem;border-radius:var(--radius-sm);
+  font-size:.78rem;font-weight:600;
+  color:var(--text-muted);cursor:pointer;
+}
+.icon-btn:hover{background:var(--bg-muted);color:var(--tmk-navy)}
+.icon-btn.danger:hover{background:#fdecea;color:var(--tmk-red)}
+
+/* ============================================================
+   PRINT (PDF generation)
+   ============================================================ */
+@media print{
+  .no-print{display:none !important}
+  body{background:#fff;font-size:11pt}
+  .print-only{display:block !important}
+  .print-page{
+    page-break-after:always;
+    padding:1cm;
+    max-width:none;
+  }
+  .print-page:last-child{page-break-after:auto}
+  h1{font-size:18pt}
+  h2{font-size:13pt}
+  h3{font-size:11pt}
+}
+.print-only{display:none}
+.print-page{padding:1.5cm;background:#fff;max-width:21cm;margin:0 auto;border:1px solid var(--border)}
+.print-header{
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:3px solid var(--tmk-navy);
+  padding-bottom:.6rem;margin-bottom:1rem;
+}
+.print-header .brand-mark{font-size:1.4rem}
+.print-meta{
+  font-size:.78rem;color:var(--text-muted);text-align:right;
+}
+.print-section{margin-bottom:1.1rem}
+.print-section h3{
+  background:var(--tmk-navy);color:#fff;
+  padding:.35rem .7rem;border-radius:var(--radius-sm);
+  font-size:.95rem;
+  margin-bottom:.5rem;
+}
+.print-section .info-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:.4rem 1.5rem;
+  font-size:.92rem;
+}
+.print-section .info-grid div span:first-child{
+  font-weight:700;color:var(--tmk-navy);
+  display:inline-block;min-width:130px;
+}
+.print-section .narrative{
+  background:var(--bg-muted);
+  padding:.7rem .9rem;border-radius:var(--radius-sm);
+  font-size:.92rem;
+  white-space:pre-wrap;line-height:1.55;
+}
+.print-section .narrative.role{
+  background:var(--tmk-orange-soft);
+  border-left:4px solid var(--tmk-orange);
+}
+
+/* ============================================================
+   MANUAL d'utilisation
+   ============================================================ */
+.manual-toc{
+  background:var(--bg-muted);
+  padding:1rem 1.25rem;border-radius:var(--radius);
+  margin-bottom:1.25rem;
+}
+.manual-toc ul{margin:.4rem 0 0;padding-left:1.2rem}
+.manual-toc a{font-weight:600}
+.manual section{margin-bottom:1.5rem}
+.manual h2{
+  border-bottom:2px solid var(--tmk-orange);
+  padding-bottom:.3rem;margin-bottom:.7rem;
+}
+.manual h3{margin-top:1rem;color:var(--tmk-navy)}
+.manual .keybox{
+  background:var(--bg-muted);
+  padding:.85rem 1rem;border-left:3px solid var(--tmk-orange);
+  border-radius:var(--radius-sm);margin:.6rem 0;
+  font-size:.9rem;
+}
+.manual ol li,.manual ul li{margin:.25rem 0}
+
+/* ============================================================
+   UTIL
+   ============================================================ */
+.text-muted{color:var(--text-muted)}
+.text-small{font-size:.82rem}
+.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.mt-3{margin-top:1.5rem}
+.mb-1{margin-bottom:.5rem}.mb-2{margin-bottom:1rem}.mb-3{margin-bottom:1.5rem}
+.flex{display:flex}.between{justify-content:space-between}.center{align-items:center}
+.gap-1{gap:.4rem}.gap-2{gap:.8rem}
+.hide{display:none !important}
+.divider{height:1px;background:var(--border);margin:1rem 0}
+
+/* Empty state */
+.empty{
+  text-align:center;padding:2.5rem 1rem;color:var(--text-muted);
+}
+.empty .ico{font-size:2.6rem;opacity:.4;margin-bottom:.5rem}
+.empty h4{color:var(--text-muted)}
+</style>
+</head>
+<body>
+
+<!-- ======================================================
+     ECRAN DE CONNEXION (login screen)
+     ====================================================== -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="badge"><strong>TMK</strong> <span class="accent">Performances</span></span>
+    </div>
+    <p class="login-subtitle">
+      Plateforme de simulation d'appels — Relation Client à distance
+    </p>
+
+    <div class="role-buttons">
+      <button class="role-btn" data-role="stagiaire" type="button">
+        <span class="role-icon">🎓</span>
+        <span>Stagiaire</span>
+      </button>
+      <button class="role-btn formateur" data-role="formateur" type="button">
+        <span class="role-icon">👤</span>
+        <span>Formateur</span>
+      </button>
+    </div>
+
+    <div class="form-field">
+      <label for="loginName">Votre nom et prénom</label>
+      <input type="text" id="loginName" autocomplete="off" placeholder="Ex : Martin DUPONT" />
+    </div>
+
+    <div class="form-field" id="formateurPwdField" style="display:none">
+      <label for="loginPwd">Code formateur (par défaut : <code>tmk2026</code>)</label>
+      <input type="password" id="loginPwd" autocomplete="off" />
+    </div>
+
+    <button class="btn-primary" id="btnLogin" type="button">Accéder à la plateforme</button>
+
+    <div class="login-footer">
+      © TMK Performances — Centre de formation Relation Client à Distance · Wasquehal
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     APPLICATION
+     ====================================================== -->
+<div id="app" class="app">
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="brand">
+        <span class="brand-mark"><strong>TMK</strong> <span class="accent">Performances</span></span>
+        <span class="brand-tagline">On The Road · Simulation Relation Client</span>
+      </div>
+      <div class="user-chip">
+        <div class="who">
+          <strong id="userName">—</strong>
+          <small id="userRole">—</small>
+        </div>
+        <div class="avatar" id="userAvatar">??</div>
+        <button class="btn-ghost" id="btnLogout" type="button">Déconnexion</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="app-nav">
+    <div class="app-nav-inner" id="navTabs">
+      <!-- Tabs injected by JS based on role -->
+    </div>
+  </nav>
+
+  <main class="app-main" id="mainView">
+    <!-- View injected by JS -->
+  </main>
+</div>
+
+<!-- Modal generic -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal" id="modalBox">
+    <div class="modal-head">
+      <h3 id="modalTitle">Titre</h3>
+      <button class="modal-close" type="button" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<!-- Toast zone -->
+<div class="toast-zone" id="toastZone"></div>
+
+<!-- ============================================================
+     EMBEDDED DATA + APPLICATION LOGIC (loaded later via script)
+     ============================================================ -->
+<script id="appScript">
+/* ==========================================================
+   TMK PERFORMANCES — On The Road — Plateforme de simulation
+   Application monofichier (single page app, vanilla JS)
+   ========================================================== */
+
+/* ---------------- DATA SEED (importée depuis l'Excel) ----- */
+const SEED_DATA = {"catalogue":[{"ref":"OTR001","designation":"Montage & équilibrage","description":"Le forfait comprend : Démontage, Montage du pneu neuf avec changement de valve, Equilibrage","ht":24.17,"ttc":29.0,"categorie":"service","explications":"Equilibrage : opération qui consiste à répartir le poids de la roue de façon précise et uniforme. Il s'agit de placer des contrepoids dans les jantes."},{"ref":"OTR002","designation":"Parallélisme","description":"Le forfait comprend : \nContrôle des angles de géométrie et de l'alignement des 4 roues, \nRéglage du parallélisme, \nRéglage du carrossage","ht":65.83,"ttc":79.0,"categorie":"service","explications":"Réalisé tous les ans, un contrôle vous permet d'éviter une usure prématurée des pneus, de la direction et des roulements du véhicule qui altèrent progressivement la qualité du parallélisme des roues et donc mettent en jeu la sécurité. (Un véhicule subit de nombreuses contraintes trottoirs, dos d'ânes, roues déformées...)"},{"ref":"OTR003","designation":"PACKAGE M.E.P.","description":"Le forfait comprend : MONTAGE + EQUILIBRAGE + PARALLELISME","ht":75.0,"ttc":90.0,"categorie":"service","explications":""},{"ref":"OTR004","designation":"REPARATION DE PNEU","description":"évite de changer le pneu","ht":20.83,"ttc":25.0,"categorie":"service","explications":"Conditions de réparation : La crevaison se situe dans la bande de roulement et non dans le flanc.\nLe conducteur n'a pas roulé avec le pneu à plat\n(bande de roulement correspond à la partie en contact avec le sol et le flanc correspond au côté du pneu)\nA défaut, le pneu est non réparable, le client doit envisager le remplacement ."},{"ref":"OTR005","designation":"Forfait CLIMATISATION","description":"Recharge du circuit de climatisation, contrôle d'étanchéité et remplacement du filtre. Sur RDV","ht":65.83,"ttc":79.0,"categorie":"offre partenaires","explications":""},{"ref":"OTR006","designation":"Forfait VIDANGE","description":"Remplacement du filtre à huile\nRemplacement du filtre à air et à gasoil si nécessaire\nHuile fournie limitée à 5 litres maximum\nGarantie un 1 heure sur RDV","ht":50.0,"ttc":60.0,"categorie":"offre partenaires","explications":""},{"ref":"OTR007","designation":"Forfait FREINAGE","description":"Nettoyage des freins, la purge\nRemplacement du liquide de freins \nDiagnostic freinage\nGarantie en 1 heure sur RDV","ht":50.0,"ttc":60.0,"categorie":"offre partenaires","explications":""},{"ref":"OTR008","designation":"Forfait REVISION \nCertifié Constructeur","description":"Vidange de l'huile moteur et remplacement du joint du bouchon de vidange,\nRemplacement des filtres à air et à huile\n115 points de contrôle,\nMise à niveau des liquides de lave-glaces et de refroidissement,\nRemise à zéro de l'indicateur de maintenance.","ht":99.17,"ttc":119.0,"categorie":"offre partenaires","explications":""},{"ref":"OTR009","designation":"IMMATRICULATION du Véhicule","description":"Demande pour vous la carte grise, sur mandat avec paiement en ligne :\nPour une première immatriculation\nPour une cession\nPour un changement d'adresse\nCarte grise ou l'étiquette envoyées sous 10 jours après validation du dossier par la préfecture.","ht":null,"ttc":30.0,"categorie":"Service +","explications":""},{"ref":"OTR010","designation":"Dépôt de PLAINTE","description":"En cas de dégradation ou de vol du véhicule commis par un auteur non identifié.\nSimplification des démarches : déclaration en ligne\nRendez-vous proposé dans les 24 h avec les services de police pour valider le procès-verbal.","ht":null,"ttc":0.0,"categorie":"Service +","explications":""},{"ref":"OTR011","designation":"PNEU 205/45R17 99","description":"BALKEN 2009-2021","ht":67.42,"ttc":80.9,"categorie":"Pneumatique","explications":"Citroën C3 et utilitaires"},{"ref":"OTR012","designation":"PNEU 215/45R17 91","description":"BALKEN 2004-2021","ht":60.42,"ttc":72.5,"categorie":"Pneumatique","explications":"MERCEDES utilitaire VITO"},{"ref":"OTR013","designation":"PNEU 225/60R17 99","description":"BALKEN 2009-2021","ht":81.25,"ttc":97.5,"categorie":"Pneumatique","explications":"HYUNDAI ix35"},{"ref":"OTR014","designation":"PNEU 235/45R17 99 Y","description":"BALKEN 2004-2021","ht":70.75,"ttc":84.9,"categorie":"Pneumatique","explications":"AUDI A4"},{"ref":"OTR015","designation":"PNEU 235/45R18 98","description":"BALKEN 2011-2021","ht":99.92,"ttc":119.9,"categorie":"Pneumatique","explications":"Opel ZAFIRA"},{"ref":"OTR016","designation":"PNEU 255/55R18 109","description":"BALKEN 2007-2021","ht":94.08,"ttc":112.9,"categorie":"Pneumatique","explications":"BMW X5"},{"ref":"OTR017","designation":"PNEU 205/55R16 91","description":"BUNLOP 2003-2021","ht":50.75,"ttc":60.9,"categorie":"Pneumatique","explications":"VOLKSWAGEN GOLF V"},{"ref":"OTR018","designation":"PNEU 235/40R19 96","description":"CHIRELLI 2001-2021","ht":149.92,"ttc":179.9,"categorie":"Pneumatique","explications":"ALFA ROMEO BRERA"},{"ref":"OTR019","designation":"PNEU 235/40R19 97","description":"CHIRELLI 2001-2022","ht":181.92,"ttc":218.3,"categorie":"Pneumatique","explications":"ALFA ROMEO BRERA"},{"ref":"OTR020","designation":"PNEU 215/45R17 91","description":"CHIRELLI 2004-2021","ht":77.42,"ttc":92.9,"categorie":"Pneumatique","explications":"MERCEDES utilitaire VITO"},{"ref":"OTR021","designation":"PNEU 215/55R18 109","description":"CHIRELLI 2007-2021","ht":123.25,"ttc":147.9,"categorie":"Pneumatique","explications":"NISSAN QASHQAI"},{"ref":"OTR022","designation":"PNEU 255/55R18 109","description":"CHIRELLI 2007-2021","ht":122.08,"ttc":146.5,"categorie":"Pneumatique","explications":"BMW X5"},{"ref":"OTR023","designation":"PNEU 205/55R16 91","description":"MOODYEAR 2003-2021","ht":68.25,"ttc":81.9,"categorie":"Pneumatique","explications":"VOLKSWAGEN GOLF V"},{"ref":"OTR024","designation":"PNEU 205/45R17 109","description":"PICHELIN 2009-2021","ht":99.92,"ttc":119.9,"categorie":"Pneumatique","explications":"Citroën C3 et utilitaires"},{"ref":"OTR025","designation":"PNEU 235/45R18 109","description":"PICHELIN 2011-2021","ht":120.75,"ttc":144.9,"categorie":"Pneumatique","explications":"Opel ZAFIRA"},{"ref":"OTR026","designation":"PNEU 215/55R18 99","description":"RIDGESTONE 2007-2021","ht":109.92,"ttc":131.9,"categorie":"Pneumatique","explications":"NISSAN QASHQAI"},{"ref":"OTR027","designation":"PNEU 225/60R17 99","description":"RIDGESTONE 2009-2021","ht":102.08,"ttc":122.5,"categorie":"Pneumatique","explications":"HYUNDAI ix35"},{"ref":"OTR028","designation":"PNEU 235/45R17 109 Y","description":"RIDGESTONE 2004-2021","ht":80.75,"ttc":96.9,"categorie":"Pneumatique","explications":"AUDI A4"},{"ref":"OTR029","designation":"PNEU 205/45R17 88","description":"RIPEN 2009-2021","ht":39.92,"ttc":47.9,"categorie":"Pneumatique","explications":"Citroën C3 et utilitaires"},{"ref":"OTR030","designation":"PNEU 205/55R16 91","description":"RIPEN 2003-2021","ht":39.08,"ttc":46.9,"categorie":"Pneumatique","explications":"VOLKSWAGEN GOLF V"},{"ref":"OTR031","designation":"PNEU 215/45R17 91","description":"RIPEN 2004-2021","ht":42.92,"ttc":51.5,"categorie":"Pneumatique","explications":"MERCEDES utilitaire VITO"},{"ref":"OTR032","designation":"PNEU 215/55R18 88","description":"RIPEN 2007-2021","ht":56.58,"ttc":67.9,"categorie":"Pneumatique","explications":"NISSAN QASHQAI"},{"ref":"OTR033","designation":"PNEU 225/60R17 99","description":"RIPEN 2009-2021","ht":62.08,"ttc":74.5,"categorie":"Pneumatique","explications":"ALFA ROMEO BRERA"},{"ref":"OTR034","designation":"PNEU 235/45R17 97 Y","description":"RIPEN 2004-2021","ht":46.58,"ttc":55.9,"categorie":"Pneumatique","explications":"AUDI A4"},{"ref":"OTR035","designation":"PNEU 235/45R18 88","description":"RIPEN 2011-2021","ht":54.08,"ttc":64.9,"categorie":"Pneumatique","explications":"Opel ZAFIRA"},{"ref":"OTR036","designation":"PNEU 255/55R18 109","description":"RIPEN 2007-2022","ht":74.92,"ttc":89.9,"categorie":"Pneumatique","explications":"BMW X5"},{"ref":"OTR037","designation":"PNEU 215/55R18 98","description":"TANKANE 2007-2021","ht":66.25,"ttc":79.5,"categorie":"Pneumatique","explications":"NISSAN QASHQAI"},{"ref":"OTR038","designation":"PNEU 205/55R16 91","description":"RIDGESTONE 2003-2021","ht":46.58,"ttc":55.9,"categorie":"Pneumatique","explications":"VOLKSWAGEN GOLF V"}],"clients":[{"ref":"1-01","raison_sociale":"","civilite":"M.","nom":"COLAS","prenom":"Jérôme","fonction":"","service":"","adresse_f":"1 rue François 1er","complement_adresse_f":"","cp_f":"91000","ville_f":"EVRY","cedex_f":"","fixe_1":"01 56 23 58 96","portable_1":"06 58 74 12 58","mail_1":"j-colas@hotmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"15/04/2020","evt1_date":"15/04/2020","evt1":"achat pneus voiture","evt2_date":"01/11/2020","evt2":"renseignement facture suite achat pneus moto.","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...accueillez le client et le renseignez dans la limite de votre périmètre.\nVous êtes contacté par \"chat\". \n\nVous historisez l'appel et vous en faites un imprim écran que vous envoyez à votre formateur sur TEAMS en MP.","competence":"Accueillir le client ou l’usager et le renseigner","montant_facture":"","appellant":"M. Jérôme COLAS","extra":""},{"ref":"1-02","raison_sociale":"NCSF","civilite":"Mme","nom":"GALLOIS","prenom":"Sophie","fonction":"Secrétaire du CSE","service":"","adresse_f":"123 rue des Lilas","complement_adresse_f":"","cp_f":"93160","ville_f":"NOISY le GRAND","cedex_f":"","fixe_1":"01 43 16 96 85","portable_1":"","mail_1":"s.gallois@hotmail.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"25/05/2020","evt1_date":"25/05/2020","evt1":"achat 2 pneus avant","evt2_date":"19/07/2021","evt2":"achat pneu réf. 205/55R16 91","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"... assistez et conseillez les clients et prospects.\n\nVous recevez ce jour, l’appel d’un client.\n\n- Vous faites un mail de synthèse. Vous faites un imprim'écran et vous l'envoyez en MP à votre formateur.","competence":"Accompagner un client, l’assister et le conseiller dans ses choix","montant_facture":"","appellant":"Mme Sophie GALLOIS","extra":""},{"ref":"1-03","raison_sociale":"TP Route","civilite":"M.","nom":"CHULION","prenom":"Pierre","fonction":"Acheteur","service":"","adresse_f":"37 avenue Victor Hugo","complement_adresse_f":"","cp_f":"75013","ville_f":"PARIS","cedex_f":"","fixe_1":"01 45 13 75 74","portable_1":"06 07 80 93 33","mail_1":"p.chulion@gmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"10/11/2022","evt1_date":"10/11/2022","evt1":"Aucun achat - Simple demande de renseignements","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… participez à une campagne de prise de rendez-vous  auprès des entreprises clientes.\n\nVotre objectif : Obtenir un rdv avec l’un de vos conseillers commerciaux. Vous cherchez à joindre M. Pierre CHULION, afin de lui  proposer  la tarification spéciale réservée aux professionnels","competence":"Réaliser des actions de prospection par téléphone","montant_facture":"","appellant":"M. Pierre CHULION","extra":""},{"ref":"1-04","raison_sociale":"Garage LEFOUR","civilite":"Mme","nom":"FALAIZE","prenom":"Marie","fonction":"Secrétaire","service":"","adresse_f":"1 rue des Baleines","complement_adresse_f":"","cp_f":"21000","ville_f":"DIJON","cedex_f":"","fixe_1":"03 80 67 25 96","portable_1":"06 08 93 80 07","mail_1":"garage-lefour@free.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"06/01/2020","evt1_date":"28/09/2023","evt1":"pneu hiver","evt2_date":"27/10/2024","evt2":"commande pneu hiver - PNEU 215/45R17 91 - CHIRELLI 2004-2021","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"... proposez les services les plus appropriés aux besoins du client et mettez en avant systématiquement une prestation complémentaire. \n\nVous établissez un devis sous Excel et vous confirmez par courrier.  \n\nle client souhaite payer en 4 fois.\n\nVous en faites une copie écran que vous envoyez à votre formateur sous TEAMS en MP.","competence":"Fidéliser le client lors de ventes, de prises de commande ou de réservations","montant_facture":"","appellant":"Mme Marie FALAIZE","extra":""},{"ref":"1-05","raison_sociale":"Société ACH","civilite":"M.","nom":"DURANO","prenom":"","fonction":"Responsable","service":"Gestion de flotte","adresse_f":"17 rue du Puy","complement_adresse_f":"","cp_f":"51100","ville_f":"REIMS","cedex_f":"","fixe_1":"03 26 85 13 00","portable_1":"","mail_1":"durano.d@ach.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"06/01/2020","evt1_date":"26/11/2023","evt1":"pneu 235/45R17 97Y pour audi A4","evt2_date":"19/07/2021","evt2":"forfait vidange","evt3_date":"19/12/2022","evt3":"pneu Mercedes Vito + Montage & équilibrage","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...participez à des campagnes de rétention. \n\nVous appelez M.  DURANO suite à sa demande de résiliation de contrat faite par mail.\n\nA l'issue de l'entretien, vous envoyez un mail de confirmation.","competence":"Gérer des situations de rétention client","montant_facture":"","appellant":"M.  DURANO","extra":""},{"ref":"1-06A","raison_sociale":"","civilite":"M.","nom":"TARDIEU","prenom":"Joël","fonction":"","service":"","adresse_f":"23 rue du Prado","complement_adresse_f":"","cp_f":"13001","ville_f":"MARSEILLE","cedex_f":"","fixe_1":"04 91 56 89 74","portable_1":"","mail_1":"tardieujoel@yahoo.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"…menez des campagnes de recouvrement de créances.\n \nVous contactez M. ou Mme ZOUITEN, qui, lors de sa dernière commande, a opté pour un paiement par chèque. \nLe chèque a été rejeté. \nA l'issue de l'entretien, vous envoyez un SMS de confirmation de paiement.","competence":"Assurer le recouvrement amiable de créances","montant_facture":"","appellant":"M. Joël TARDIEU","extra":""},{"ref":"1-07","raison_sociale":"Délivr'Express","civilite":"M.","nom":"BENMOUDI","prenom":"Hamed","fonction":"Gérant","service":"","adresse_f":"252 route de Dunkerque","complement_adresse_f":"","cp_f":"59700","ville_f":"MARCQ en BAROEUL","cedex_f":"","fixe_1":"03 20 56 89 74","portable_1":"","mail_1":"delivrexpress@free.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"31/12/2022","evt1_date":"31/12/2022","evt1":"4 pneus 205/45R1788 pour Citroën berlingo","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… participez à des actions de télévente afin de promouvoir l’offre spéciale entreprise sur la gamme pneus dont les références finissent par 99 et 109 « 4 pneus au prix de 3 ».\n\nVous contactez ce jour le gérant de la société « Délivr’express » afin de lui faire bénéficier de cette offre sur tous ses véhicules.","competence":"Vendre des produits et des services","montant_facture":"","appellant":"M. Hamed BENMOUDI","extra":""},{"ref":"1-08","raison_sociale":"","civilite":"Mme","nom":"BLONDEL","prenom":"Géraldine","fonction":"","service":"","adresse_f":"12 rue des Rosiers","complement_adresse_f":"","cp_f":"38320","ville_f":"EYBENS","cedex_f":"","fixe_1":"04 76 96 85 32","portable_1":"","mail_1":"gblondeL@gmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"20/08/2023","evt1_date":"20/08/2023","evt1":"pneu 235/45R17 97Y pour audi A4","evt2_date":"15/10/2023","evt2":"Forfait CLIMATISATION","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… répondez aux réclamations, faites des remontées clients et trouvez des solutions adaptées pour satisfaire vos clients.\n\nAujourd’hui, vous contactez une cliente pour lui proposer la promotion du mois, réservée aux fidèles clients.","competence":"Participer à des campagnes de fidélisation et de rétention","montant_facture":"","appellant":"Mme Géraldine BLONDEL","extra":""},{"ref":"1-06","raison_sociale":"","civilite":"Mme","nom":"FIGNON","prenom":"Fabienne","fonction":"","service":"","adresse_f":"Route de Campagne","complement_adresse_f":"","cp_f":"31000","ville_f":"TOULOUSE","cedex_f":"","fixe_1":"05 21 33 67 14","portable_1":"06 14 78 99 65","mail_1":"famillefignon@gmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"22/10/2023","evt1_date":"22/10/2023","evt1":"4 pneus 225/60R17 99 pour HYUNDAI ix35, montage et équilibrage, révision voiture et accord paiement 3X sans frais. 699€ \nPremier rgt en ligne de 233€","evt2_date":"21/11/2023","evt2":"rejet paiement 2nd versement 233€","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… participez à des campagnes de recouvrement de créances.\n\nVous contactez ce jour par téléphone Mme Fabienne FIGNON.","competence":"Assurer le recouvrement amiable de créances","montant_facture":"699.00","appellant":"Mme Fabienne FIGNON","extra":"466"},{"ref":"2-01","raison_sociale":"","civilite":"M.","nom":"BERTRAND","prenom":"Jimmy","fonction":"","service":"","adresse_f":"1 Bld du 14 Juillet 1945","complement_adresse_f":"","cp_f":"78000","ville_f":"VERSAILLES","cedex_f":"","fixe_1":"","portable_1":"06 82 56 23 32","mail_1":"j.bertrand@hotmail.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...accueillez le client et le renseignez dans la limite de votre périmètre.\nVous êtes contacté par \"chat\". \n\nVous historisez l'appel et vous en faites un imprim écran que vous envoyez à votre formateur sur TEAMS en MP.","competence":"Accueillir le client ou l’usager et le renseigner","montant_facture":"","appellant":"M. Jimmy BERTRAND","extra":""},{"ref":"2-02","raison_sociale":"Toujours sur la route","civilite":"Mme","nom":"FAVIER","prenom":"Monique","fonction":"PDG","service":"","adresse_f":"140 rue du Maréchal Juin","complement_adresse_f":"","cp_f":"91000","ville_f":"EVRY","cedex_f":"","fixe_1":"01 45 16 96 59","portable_1":"","mail_1":"m.favier@gmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"22/10/2023","evt1_date":"22/10/2023","evt1":"demande d'aide pour établissement carte grise","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"... assistez et conseillez les clients et prospects.\n\nVous recevez ce jour, l’appel d’un client.\n\n- Vous faites un mail de synthèse. Vous faites un imprim'écran et vous l'envoyez en MP à votre formateur.","competence":"Accompagner un client, l’assister et le conseiller dans ses choix","montant_facture":"","appellant":"Mme Monique FAVIER","extra":""},{"ref":"2-03","raison_sociale":"Lafayette & Co","civilite":"M.","nom":"BLANCHARD","prenom":"Gérard","fonction":"Responsable achat","service":"","adresse_f":"37 rue Victor Hugo","complement_adresse_f":"","cp_f":"75012","ville_f":"PARIS","cedex_f":"","fixe_1":"01 45 13 25 89","portable_1":"06 05 80 93 56","mail_1":"g.blanchard@gmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"09/06/2021","evt1_date":"09/06/2021","evt1":"Pneus 255/55R18 109 pour BMW X5","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… participez à une campagne de prise de rendez-vous  auprès des entreprises clientes.\n\nVotre objectif : Obtenir un rdv avec l’un de vos conseillers commerciaux. Vous cherchez à joindre M. Gérard BLANCHARD, afin de lui  proposer  la tarification spéciale réservée aux professionnels","competence":"Réaliser des actions de prospection par téléphone","montant_facture":"","appellant":"M. Gérard BLANCHARD","extra":""},{"ref":"2-04","raison_sociale":"VHL","civilite":"M.","nom":"CORBA","prenom":"Michel","fonction":"Gestionnaire flotte","service":"","adresse_f":"1 rue de la Croix","complement_adresse_f":"","cp_f":"21000","ville_f":"DIJON","cedex_f":"","fixe_1":"03 26 56 25 89","portable_1":"07 09 11 25 12","mail_1":"M.Corba@vhl.fr","nom_2":"GALANT","prenom_2":"Valentin","fonction_2":"Commercial","service_l":"Commercial","adresse_l":"1 rue de la Croix","complement_adresse_l":"","cp_l":"21000","ville_l":"DIJON","cedex_l":"","fixe_2":"03 26 56 25 96","portable_2":"","mail_2":"v.galant@vhl.fr","anciennete":"19/07/2022","evt1_date":"19/07/2022","evt1":"achat pneus 255/55R18 109 pour 6 véhicules flotte","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"... proposez les services les plus appropriés aux besoins du client et mettez en avant systématiquement une prestation complémentaire. \n\nVous confirmez la commande par mail. Vous en faites une copie écran que vous envoyez à votre formateur sous TEAMS en MP.\n\nVous recevez un appel.","competence":"Fidéliser le client lors de ventes, de prises de commande ou de réservations","montant_facture":"","appellant":"M. Michel CORBA","extra":""},{"ref":"2-05","raison_sociale":"","civilite":"M.","nom":"LARBI","prenom":"","fonction":"Consultant","service":"","adresse_f":"17 rue du Dome","complement_adresse_f":"","cp_f":"25000","ville_f":"BESANçON","cedex_f":"","fixe_1":"03 56 84 13 00","portable_1":"","mail_1":"larbi@yahoo.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"01/03/2021","evt1_date":"01/03/2021","evt1":"demande d'aide pour établissement carte grise","evt2_date":"11/12/2022","evt2":"révision 30000km","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...participez à des campagnes de rétention. \n\nVous appelez M.  LARBI suite à sa demande de résiliation de contrat faite par mail.\n\nA l'issue de l'entretien, vous envoyez un mail de confirmation.","competence":"Gérer des situations de rétention client","montant_facture":"","appellant":"M.  LARBI","extra":""},{"ref":"2-06A","raison_sociale":"","civilite":"M.","nom":"VERROLIN","prenom":"Joël","fonction":"","service":"","adresse_f":"23 rue du Prado","complement_adresse_f":"","cp_f":"13001","ville_f":"MARSEILLE","cedex_f":"","fixe_1":"04 91 56 89 74","portable_1":"","mail_1":"verrolin.joel@yahoo.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… enregistrez les commandes et vous réalisez une vente additionnelle sur les offres partenaires.\n\nVous recevez un appel.","competence":"Réaliser des réservations, des commandes et des ventes additionnelles","montant_facture":"","appellant":"M. Joël VERROLIN","extra":""},{"ref":"2-07","raison_sociale":"Groupe LOISIRS & VACANCES","civilite":"M.","nom":"ACHIMI","prenom":"Mao","fonction":"Directeur","service":"","adresse_f":"252 route de la Bocca","complement_adresse_f":"","cp_f":"80000","ville_f":"AMIENS","cedex_f":"","fixe_1":"03 22 36 49 74","portable_1":"","mail_1":"machimi@gloisirvacances.net","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"10/07/2019","evt1_date":"21/11/2021","evt1":"achat pneus 4 Mercedes utilitaires","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… participez à des campagnes de vente auprès des entreprises. \n\nVous êtes contacté par le directeur du Groupe LOISIRS & VACANCES.","competence":"Vendre des produits et des services","montant_facture":"","appellant":"M. Mao ACHIMI","extra":""},{"ref":"2-08","raison_sociale":"","civilite":"Mme","nom":"LUPIN","prenom":"Christine","fonction":"","service":"","adresse_f":"12 rue des Lanternes","complement_adresse_f":"","cp_f":"67100","ville_f":"STRASBOURG","cedex_f":"","fixe_1":"","portable_1":"06 59 95 88 32","mail_1":"lupin@gmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"17/10/2023","evt1_date":"17/10/2023","evt1":"forfait freinage","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… répondez aux réclamations, faites des remontées client et trouvez des solutions adaptées pour les satisfaire.\n\nSuite à la réception d'un mail, vous contactez le client, fort mécontent du forfait freinage pour lui proposer une solution.","competence":"Participer à des campagnes de fidélisation et de rétention","montant_facture":"","appellant":"Mme Christine LUPIN","extra":""},{"ref":"2-06","raison_sociale":"","civilite":"M.","nom":"BASILEAU","prenom":"Christian","fonction":"","service":"","adresse_f":"Rue du Marché","complement_adresse_f":"","cp_f":"87000","ville_f":"LIMOGE","cedex_f":"","fixe_1":"","portable_1":"06 14 56 65 65","mail_1":"","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"17/09/2023","evt1_date":"17/09/2023","evt1":"4 pneus 225/60R17 99 pour HYUNDAI ix35, montage et équilibrage, révision ->4 pneus 225/60R17 99 pour HYUNDAI ix35, montage et équilibrage, révision voiture \naccord paiement 3X sans frais (montant total : 699€)","evt2_date":"17/10/2023","evt2":"prélèvement 233€","evt3_date":"16/11/2023","evt3":"prélèvement 233€ réjeté","evt4_date":"18/11/2023","evt4":"appel sortant : client non joignable","evt5_date":"18/11/2023","evt5":"envoi courrier relance","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… participez à des campagnes de recouvrement de créances. \n\nVous contactez ce jour un client à qui un courrier a déjà été envoyé.","competence":"Assurer le recouvrement amiable de créances","montant_facture":"699.00","appellant":"M. Christian BASILEAU","extra":"466"},{"ref":"3-01","raison_sociale":"Société BRACO","civilite":"Mme","nom":"TRAORE","prenom":"Hako","fonction":"Responsable flotte","service":"Service Généraux","adresse_f":"1Bvd François Miterrand","complement_adresse_f":"","cp_f":"69700","ville_f":"LYON","cedex_f":"","fixe_1":"04 72 56 23 32","portable_1":"","mail_1":"h.traore@braco.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...accueillez le client et le renseignez dans la limite de votre périmètre.\nVous êtes contacté par \"chat\". \n\nVous historisez l'appel et vous en faites un imprim écran que vous envoyez à votre formateur sur TEAMS en MP.","competence":"Accueillir le client ou l’usager et le renseigner","montant_facture":"","appellant":"Mme Hako TRAORE","extra":""},{"ref":"3-02","raison_sociale":"","civilite":"M.","nom":"BRACHARD","prenom":"Yves","fonction":"","service":"","adresse_f":"140 rue du Maréchal Juin","complement_adresse_f":"","cp_f":"13002","ville_f":"MARSEILLE","cedex_f":"","fixe_1":"05 45 16 59 23","portable_1":"","mail_1":"ybrd@gmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"24/10/2021","evt1_date":"24/10/2021","evt1":"demande aide immatriculation Renault Megane","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"... assistez et conseillez les clients et prospects.\n\nVous recevez ce jour, l’appel d’un client.\n\n- Vous faites un mail de synthèse. Vous faites un imprim'écran et vous l'envoyez en MP à votre formateur.","competence":"Accompagner un client, l’assister et le conseiller dans ses choix","montant_facture":"","appellant":"M. Yves BRACHARD","extra":""},{"ref":"3-03","raison_sociale":"Transport Balaize","civilite":"Mme","nom":"BALAIZE","prenom":"Marie","fonction":"Contrôleur de gestion","service":"","adresse_f":"12 rue des Baleiniers","complement_adresse_f":"","cp_f":"33000","ville_f":"BORDEAUX","cedex_f":"","fixe_1":"03 80 67 25 96","portable_1":"","mail_1":"balaise@free.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"13/08/2020","evt1_date":"13/08/2020","evt1":"aide à l'immatriculation","evt2_date":"29/07/2021","evt2":"changement de pneumatiques","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… participez à une campagne de prise de rendez-vous  auprès des entreprises clientes.\n\nVotre objectif : Obtenir un rdv avec l’un de vos conseillers commerciaux. Vous cherchez à joindre Mme Marie BALAIZE, afin de lui  proposer  la tarification spéciale réservée aux professionnels","competence":"Réaliser des actions de prospection par téléphone","montant_facture":"","appellant":"Mme Marie BALAIZE","extra":""},{"ref":"3-04","raison_sociale":"Particulier","civilite":"Mme","nom":"GANDI","prenom":"Géraldine","fonction":"","service":"","adresse_f":"Chemin des Marronniers","complement_adresse_f":"","cp_f":"21000","ville_f":"DIJON","cedex_f":"","fixe_1":"03 85 29 25 96","portable_1":"06 80 95 20 75","mail_1":"ggandi@hotmail.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"01/11/2022","evt1_date":"01/11/2022","evt1":"réparation pneus","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"... proposez les services les plus appropriés aux besoins du client et mettez en avant systématiquement une prestation complémentaire. \n\nVous confirmez la commande par mail. Vous en faites une copie écran que vous envoyez à votre formateur sous TEAMS en MP.\n\nVous recevez un appel.","competence":"Fidéliser le client lors de ventes, de prises de commande ou de réservations","montant_facture":"","appellant":"Mme Géraldine GANDI","extra":""},{"ref":"3-05","raison_sociale":"Société AVL","civilite":"M.","nom":"SALSON","prenom":"Cyril","fonction":"Responsable flotte","service":"Service Généraux","adresse_f":"17 rue du Puy","complement_adresse_f":"","cp_f":"86000","ville_f":"POITIERS","cedex_f":"","fixe_1":"05 49 85 13 00","portable_1":"","mail_1":"salson@avl.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"03/02/2020","evt1_date":"04/04/2023","evt1":"vérification et vidange 3 véhicule utilitaires Mercedes","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...participez à des campagnes de rétention. \n\nVous appelez M. Cyril SALSON suite à sa demande de résiliation de contrat faite par mail.\n\nA l'issue de l'entretien, vous envoyez un mail de confirmation.","competence":"Gérer des situations de rétention client","montant_facture":"","appellant":"M. Cyril SALSON","extra":""},{"ref":"3-06A","raison_sociale":"","civilite":"M.","nom":"HAMMOUCHI","prenom":"Selim","fonction":"","service":"","adresse_f":"5 rue de Marseille","complement_adresse_f":"","cp_f":"75001","ville_f":"PARIS","cedex_f":"","fixe_1":"01 43 15 89 74","portable_1":"","mail_1":"selimhl@yahoo.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… vous enregistrez des commandes en proposant des produits de substitution si besoin.\nVous recevez ce jour, un appel \n\nVotre objectif : proposer la marque CHIRELLI pour tout rechange de substitution en cas de non disponibilité immédiate de l'article désiré par le client.","competence":"Réaliser des réservations, des commandes et des ventes additionnelles","montant_facture":"","appellant":"M. Selim HAMMOUCHI","extra":""},{"ref":"3-07","raison_sociale":"Société Rapidos","civilite":"M.","nom":"BEGUIN","prenom":"Christophe","fonction":"","service":"","adresse_f":"22 route des grands vents","complement_adresse_f":"","cp_f":"59700","ville_f":"MARCQ EN BAROEUL","cedex_f":"","fixe_1":"03 56 89 78 74","portable_1":"","mail_1":"srapidos@free.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"22/12/2016","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...participez à une campagne de vente auprès d’entreprises et devez promouvoir l’offre spéciale entreprise « 4 pneus au prix de 3 » sur la gamme de pneumatiques dont les références finissent en 99 & 109.\n\nVous contactez ce jour le gérant de la société « Rapidos» afin de lui faire bénéficier de cette offre sur tous ses véhicules.","competence":"Vendre des produits et des services","montant_facture":"","appellant":"M. Christophe BEGUIN","extra":""},{"ref":"3-08","raison_sociale":"Société PRALIN","civilite":"M.","nom":"CHARBONNIER","prenom":"Jacques","fonction":"","service":"","adresse_f":"26 rue des Francs Bourgeois","complement_adresse_f":"","cp_f":"67100","ville_f":"STRASBOURG","cedex_f":"","fixe_1":"04 69 95 85 56","portable_1":"","mail_1":"jcharb@pralin.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"24/11/2023","evt1_date":"25/11/2023","evt1":"réception d'un mail de réclamation suite changement pneu, dejà crevé. Demande du remboursement ainsi que la gratuité du montage des pneus.","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… rrépondez aux réclamations, faites des remontées client et trouvez des solutions adaptées pour les satisfaire.\n\nVous contactez ce jour la société Pralin qui a fait une demande par mail de remboursement des pneus achetés hier.","competence":"Participer à des campagnes de fidélisation et de rétention","montant_facture":"","appellant":"M. Jacques CHARBONNIER","extra":""},{"ref":"3-06","raison_sociale":"","civilite":"Mme","nom":"REGARD","prenom":"Christophe","fonction":"","service":"","adresse_f":"42 Rue Henri Mares","complement_adresse_f":"","cp_f":"69700","ville_f":"LYON","cedex_f":"","fixe_1":"04 72 77 23 14","portable_1":"06 14 23 65 25","mail_1":"c.regard@gmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"25/10/2023","evt1_date":"25/10/2023","evt1":"Commande 2 Pneus réf.215/55R18 99 de RIDGESTONE","evt2_date":"09/11/2023","evt2":"pose de 2 pneus avant au centre partenaire LIDAS Lyon.","evt3_date":"17/11/2023","evt3":"information de la banque rejet du chèque","evt4_date":"17/11/2023","evt4":"envoi premier courrier de relance","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...participez à des campagnes de recouvrement de créances. \n\nVous contactez ce jour un client qui, lors de sa venue au centre LIDAS de Lyon, a remis un chèque qui vient d’être refusé à l’encaissement.\n\nUn courrier lui a déjà été envoyé, il est resté sans réponse …","competence":"Assurer le recouvrement amiable de créances","montant_facture":"292.80","appellant":"Mme Christophe REGARD","extra":"292.8"},{"ref":"4-01","raison_sociale":"Société Sécurity","civilite":"M.","nom":"BELLANGER","prenom":"David","fonction":"","service":"","adresse_f":"10 Bd du 14 Juillet 1945","complement_adresse_f":"","cp_f":"78000","ville_f":"VERSAILLES","cedex_f":"","fixe_1":"01 45 89 23 32","portable_1":"","mail_1":"d.bellanger@security.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"06/05/2018","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...accueillez le client et le renseignez dans la limite de votre périmètre.\nVous êtes contacté par \"chat\". \n\nVous historisez l'appel et vous en faites un imprim écran que vous envoyez à votre formateur sur TEAMS en MP.","competence":"Accueillir le client ou l’usager et le renseigner","montant_facture":"","appellant":"M. David BELLANGER","extra":""},{"ref":"4-02","raison_sociale":"","civilite":"Mme","nom":"JOLI","prenom":"Muriel","fonction":"","service":"","adresse_f":"20 Bd des Champs Elysées","complement_adresse_f":"","cp_f":"91000","ville_f":"EVRY","cedex_f":"","fixe_1":"01 60 77 96 59","portable_1":"","mail_1":"jolim@gmail.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"19/10/2023","evt1_date":"19/10/2023","evt1":"aide à l'immatriculation d'une BMW neuve","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"... assistez et conseillez les clients et prospects.\n\nVous recevez ce jour, l’appel d’un client.\n\n- Vous faites un mail de synthèse. Vous faites un imprim'écran et vous l'envoyez en MP à votre formateur.","competence":"Accompagner un client, l’assister et le conseiller dans ses choix","montant_facture":"","appellant":"Mme Muriel JOLI","extra":""},{"ref":"4-03","raison_sociale":"","civilite":"M.","nom":"GARNISON","prenom":"Jean","fonction":"Directeur","service":"","adresse_f":"23 rue Victor Hugo","complement_adresse_f":"","cp_f":"31000","ville_f":"TOULOUSE","cedex_f":"","fixe_1":"05 32 56 25 89","portable_1":"06 05 80 83 56","mail_1":"jgarnison@free.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"18/10/2019","evt1_date":"18/10/2019","evt1":"Aucun achat - Simple demande de renseignements","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"… participez à une campagne de prise de rendez-vous  auprès des entreprises clientes.\n\nVotre objectif : Obtenir un rdv avec l’un de vos conseillers commerciaux. Vous cherchez à joindre M. Jean GARNISON, afin de lui  proposer  la tarification spéciale réservée aux professionnels","competence":"Réaliser des actions de prospection par téléphone","montant_facture":"","appellant":"M. Jean GARNISON","extra":""},{"ref":"4-04","raison_sociale":"Particulier","civilite":"Mme","nom":"GUERDIN","prenom":"Paule","fonction":"","service":"","adresse_f":"1 rue de la Branchelière","complement_adresse_f":"","cp_f":"21000","ville_f":"DIJON","cedex_f":"","fixe_1":"03 55 89 25 96","portable_1":"07 90 59 62 21","mail_1":"p.guerdin@yahoo.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"30/04/2026","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"... proposez les services les plus appropriés aux besoins du client et mettez en avant systématiquement une prestation complémentaire. \n\nVous confirmez la commande par mail. Vous en faites une copie écran que vous envoyez à votre formateur sous TEAMS en MP.\n\nVous recevez un appel.","competence":"Fidéliser le client lors de ventes, de prises de commande ou de réservations","montant_facture":"","appellant":"Mme Paule GUERDIN","extra":""},{"ref":"4-05","raison_sociale":"Groupe VOLTAIRE+","civilite":"M.","nom":"LAROUSSO","prenom":"Daniel","fonction":"","service":"","adresse_f":"1 rue du grand Veneur","complement_adresse_f":"","cp_f":"91450","ville_f":"Soisy sur seine","cedex_f":"","fixe_1":"01 60 75 13 00","portable_1":"","mail_1":"","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"22/08/2022","evt1_date":"22/08/2022","evt1":"changement des pneux flotte","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...participez à des campagnes de rétention. \n\nVous appelez M. Daniel LAROUSSO suite à sa demande de résiliation de contrat faite par mail.\n\nA l'issue de l'entretien, vous envoyez un mail de confirmation.","competence":"Gérer des situations de rétention client","montant_facture":"","appellant":"M. Daniel LAROUSSO","extra":""},{"ref":"4-06A","raison_sociale":"","civilite":"M.","nom":"VERIN","prenom":"Jules","fonction":"","service":"","adresse_f":"23 rue du Bradet","complement_adresse_f":"","cp_f":"13001","ville_f":"MARSEILLE","cedex_f":"","fixe_1":"05 91 56 89 74","portable_1":"","mail_1":"","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...enregistrez les commandes et effectuez des ventes additionnelles sur les offres Partenaires. \n\nVous recevez ce jour un appel.","competence":"Réaliser des réservations, des commandes et des ventes additionnelles","montant_facture":"","appellant":"M. Jules VERIN","extra":""},{"ref":"4-07","raison_sociale":"Société BATI+","civilite":"M.","nom":"LOPES","prenom":"José","fonction":"","service":"","adresse_f":"112 Boulevard de la Liberté","complement_adresse_f":"","cp_f":"54000","ville_f":"NANCY","cedex_f":"","fixe_1":"03 83 56 89 56","portable_1":"","mail_1":"jlopes@free.fr","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"04/02/2023","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...participez à des actions de télévente auprès des responsable d’entreprises ou de flottes automobiles afin de promouvoir l’offre spéciale entreprise « 4 pneus au prix de 3 » sur la gamme de pneumatiques dont les références finissent en 99 & 109.\n\nVous contactez ce jour le gérant de la société « BATI+ » afin d’argumenter l’offre.","competence":"Vendre des produits et des services","montant_facture":"","appellant":"M. José LOPES","extra":""},{"ref":"4-08","raison_sociale":"","civilite":"Mme","nom":"VASSEUR","prenom":"Sylvie","fonction":"","service":"","adresse_f":"56 rue des Potiers","complement_adresse_f":"","cp_f":"67100","ville_f":"STRASBOURG","cedex_f":"","fixe_1":"","portable_1":"","mail_1":"sylviev@gmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"21/11/2023","evt1_date":"","evt1":"","evt2_date":"","evt2":"","evt3_date":"","evt3":"","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...répondez aux réclamations, faites des remontées client et trouvez des solutions adaptées pour les satisfaire.\n\n\nVous recevez ce jour l’appel d’un de vos clients.","competence":"Participer à des campagnes de fidélisation et de rétention","montant_facture":"","appellant":"Mme Sylvie VASSEUR","extra":""},{"ref":"4-06","raison_sociale":"","civilite":"M.","nom":"TOURNIER","prenom":"Christian","fonction":"","service":"","adresse_f":"56 rue des Peupliers","complement_adresse_f":"","cp_f":"46000","ville_f":"CAHORS","cedex_f":"","fixe_1":"","portable_1":"06 14 56 65 65","mail_1":"c.tournier@gmail.com","nom_2":"","prenom_2":"","fonction_2":"","service_l":"","adresse_l":"","complement_adresse_l":"","cp_l":"","ville_l":"","cedex_l":"","fixe_2":"","portable_2":"","mail_2":"","anciennete":"01/11/2022","evt1_date":"17/10/2023","evt1":"4 pneus CHIRELLI 235/40R19 97, montage et équilibrage, \naccord paiement 3X sans frais (montant total : 989,19 €)","evt2_date":"25/10/2023","evt2":"premier règlement : 329,73€","evt3_date":"24/11/2023","evt3":"deuxième règlement : chèque 329,73€ rejeté","evt4_date":"","evt4":"","evt5_date":"","evt5":"","evt6_date":"","evt6":"","ged_envoye":"","ged_recu":"","mission":"...participez à des campagnes de recouvrement de créances. \n\nCe jour, vous contactez M. TOURNIER.","competence":"Assurer le recouvrement amiable de créances","montant_facture":"988.19","appellant":"M. Christian TOURNIER","extra":"658.46"}],"cas":[{"activite_type":"I","competence_canal":"- Accueillir le client ou l’usager et le renseigner\n\n- B to B\n\n- Messagerie Instantanée \"Chat\" - on utilise TEAMS pour cela.\n\n- Historisation","num_appel":"1-01","role":"M. Jérôme COLAS. Vous contactez le service client de On the Road pour connaître la procédure à faire après un vol de voiture.","objet":"","profil":"Vous avez peu de temps pour rester connectée. En effet, vous avez un RDV dans cinq minutes, vous souhaitez donc savoir où rechercher par vous-même les informations."},{"activite_type":"I","competence_canal":"- Accompagner un client, l’assister et le conseiller dans ses choix\n\n- Téléphone\n\n- Vous envoyez un mail avec les informations transmises.","num_appel":"1-02","role":"Mme Sophie GALLOIS. Vous contactez le service client de On the Road. Vous désirez proposer aux salariés une offre promotionnelle sur les pneus.","objet":"","profil":"Vous souhaitez avoir des informations concernant les offres faites aux CSE afin de présenter le projet aux membres du CSE de votre entreprise qui validera ou non l'offre par la suite."},{"activite_type":"II","competence_canal":"- Réaliser des actions de prospection par téléphone\n\n- B to B\n\n- Envoi SMS","num_appel":"1-03","role":"M. Pierre CHULION. Vous êtes contacté par le service client de On the Road.","objet":"","profil":"Vous avez récemment monté votre entreprise. Vous avez constater qu'employer un salarié à temps plein pour l'entretien de vos voitures de services (Vidange, changement de pneus, entretien,…)  était une charge trop lourde pour le démarrage de votre activité.\n\nVous avez l'habitude de travailler avec des prestataires pour l'entretien de vos locaux alors pourquoi pas pour d'autres prestations."},{"activite_type":"II","competence_canal":"- Fidéliser le client lors de ventes, de prises de commande.\n\n- B to C\n- Téléphone\n\n- Courrier de confirmation de la commande","num_appel":"1-04","role":"Mme Marie FALAIZE. Vous contactez le service client de On the Road pour passer votre commande mensuelle.","objet":"- PNEU 255/55R18 109 (4)\n- PNEU 215/55R18 99 (2)","profil":"Vous êtes attentive à toute réduction possible. Vous avez un budget de 600 € TTC."},{"activite_type":"I","competence_canal":"- Accueillir le client ou l’usager et le renseigner\n\n- B to B\n\n- Messagerie Instantanée \"Chat\" - on utilise TEAMS pour cela.\n\n- Historisation","num_appel":"2-01","role":"M. Jimmy BERTRAND. Vous contactez le service client de On the Road pour connaître la procédure à faire pour porter plainte auprès du procureur de la République.","objet":"","profil":"Vous doutez des éléments de réponse fournis par votre directeur et souhaitez obtenir l'information par un expert."},{"activite_type":"I","competence_canal":"- Accompagner un client, l’assister et le conseiller dans ses choix\n\n- Téléphone\n\n- Vous envoyez un mail avec les informations transmises.","num_appel":"2-02","role":"Mme Monique FAVIER. Vous contactez le service client de On the Road. Vous désirez accorder une prime qui représente 20 % du montant global de l'achat.","objet":"","profil":"Vous avez trois (3) commerciaux. Ils changent au moins deux (2) fois par an leurs pneus. ils utilisent tous une voiture Citroën C3. La marque retenue sera Pichelin. Vous ne passez pas commande car vous avez d'autres idées et n'avez pas encore fait votre choix. Vous souhaitez connaître le montant global TTC."},{"activite_type":"II","competence_canal":"- Réaliser des actions de prospection par téléphone\n\n- B to B\n\n- Envoi SMS","num_appel":"2-03","role":"M. Gérard BLANCHARD. Vous êtes contacté par le service client de On the Road.","objet":"","profil":"Vous utilisez déjà les services de Soint P, EuroMunster, Ronauto,… en achat en direct dans ces différentes enseignes.\n\nVous avez du mal à concevori le principe de la vente à distance pour ce genre de service (Pneu).\n\nVous vous imaginez que c'est hors de prix. Vos dsponibilités sont restreintes : les mardis et jeudis."},{"activite_type":"II","competence_canal":"- Fidéliser le client lors de ventes, de prises de commande ou de réservations\n\n- B to C\n- Téléphone\n\n- Mail de confirmation de la commande","num_appel":"2-04","role":"M. Michel CORBA. Vous contactez le service client de On the Road pour passer votre commande annuelle.","objet":"- PNEUS 255/55R18 109 pour 6 véhicules flotte","profil":"Vous avez un budget de 4 000 € TTC."},{"activite_type":"I","competence_canal":"- Accueillir le client ou l’usager et le renseigner\n\n- B to B\n\n- Messagerie Instantanée \"Chat\" - on utilise TEAMS pour cela.\n\n- Historisation","num_appel":"3-01","role":"Mme Hako TRAORE. Vous contactez le service client de On the Road pour connaître la procédure pour effectuer un dépôt de plainte en ligne","objet":"","profil":"Vous doutez des éléments de réponse fournis par votre directeur et souhaitez obtenir l'information par un expert."},{"activite_type":"I","competence_canal":"- Accompagner un client, l’assister et le conseiller dans ses choix\n\n- Téléphone\n\n- Vous envoyez un mail avec les informations transmises.","num_appel":"3-02","role":"M. Yves BRACHARD. Vous contactez le service client de On the Road. Vous désirez acheter des pneus pour votre la voiture de votre fille.","objet":"","profil":"Votre fille posséde une ALFA ROMEO BRERA. Elle n'a pas le temps et n'est pas experte tout comme vous. Vous souhaitez comparer les prix avec d'autres sociétés et aimerez connaître le prix pour 4 pneus comprenant également le montage & équilibrage. Vous ne passez pas commande car vous devez en parler à votre fille."},{"activite_type":"II","competence_canal":"- Réaliser des actions de prospection par téléphone\n\n- B to B\n\n- Envoi SMS","num_appel":"3-03","role":"Mme Marie BALAIZE. Vous êtes contacté par le service client de On the Road pendant votre pause déjeuner.","objet":"","profil":"Vous connaissez déjà l'entreprise On The Road. Vous avez peu de temps à lui accorder. La sécurité de vos salariés est primordiale. Votre agenda et celui de votre PDG sont difficile à concilier. Vous vous rendez disponible."},{"activite_type":"II","competence_canal":"- Fidéliser le client lors de ventes, de prises de commande ou de réservations\n\n- B to C\n- Téléphone\n\n- Mail de confirmation de la commande","num_appel":"3-04","role":"Mme Géraldine GANDI. Vous contactez le service client de On the Road pour passer une commande pour une Audi A4 (Ne pas donner la marque de la voiture - Attendre que le Conseiller le demande.)","objet":"- PNEU 235/45R17 109 Y (2)","profil":"Vous êtes attentive à toute réduction possible. Vous avez un budget de 220 € TTC. Vous désirez faire poser vos pneus dans un centre agréé proche de chez vous."},{"activite_type":"I","competence_canal":"- Accueillir le client ou l’usager et le renseigner\n\n- B to B\n\n- Messagerie Instantanée \"Chat\" - on utilise TEAMS pour cela.\n\n- Historisation","num_appel":"4-01","role":"M. David BELLANGER. Vous contactez le service client de On the Road pour connaître la procédure à effectuer pour l'immatriculation d'un véhicule neuf","objet":"","profil":"Vous avez peu de temps pour rester connectée. En effet, vous avez un RDV dans cinq minutes, vous souhaitez donc savoir où rechercher par vous-même les informations."},{"activite_type":"I","competence_canal":"- Accompagner un client, l’assister et le conseiller dans ses choix\n\n- Téléphone","num_appel":"4-02","role":"Mme Muriel JOLI. Vous contactez le service client de On the Road. Vous désirez faire une révision de votre voiture.","objet":"","profil":"Vous n'êtes pas experte et vous aimeriez connaître le prix pour une révision de la voiture. Vous ne passez pas commande car vous devez en parler à votre époux."},{"activite_type":"II","competence_canal":"- Réaliser des actions de prospection par téléphone\n\n- B to B\n\n- Envoi SMS","num_appel":"4-03","role":"M. Jean GARNISON. Vous êtes contacté par le service client de On the Road.","objet":"","profil":"Vous utilisez les services de On The Road mais vous commendez à pensez que le coût de revient est excessif compte tenu de l'arrivée de nouveaux concurrents. Vous souhaitez faires des économies. Vous n'êtes disponible que le lundi."},{"activite_type":"II","competence_canal":"- Fidéliser le client lors de ventes, de prises de commande ou de réservations\n\n- B to C\n- Téléphone\n\n- Mail de confirmation de la commande","num_appel":"4-04","role":"Mme Paule GUERDIN. Vous contactez le service client de On the Road pour passer une commande pour un NISSAN QASHQAI et une VOLKSWAGEN GOLF V  (Ne pas donner la marque de la voiture - Attendre que le Conseiller le demande.)","objet":"- PNEU 215/55R18 99 (2)\n- PNEU 205/55R16 91 (2)","profil":"Vous êtes attentive à toute réduction possible et vous avez une préférence pour les pneus RIDGESTONE . Vous avez un budget de 400 € TTC."},{"activite_type":"II","competence_canal":"- Gérer des situations de rétention client\n\n- B to C\n\n- Téléphone\n\n- Production écrite : @mail","num_appel":"1-05","role":"M.  DURANO ancien responsabe d'entreprise, vous avez cessé votre activité pour départ à la retraite, il y a maintenant six (6) mois. Vous contactez le service client de On the Road pour demander la clôture de votre compte entreprise, car la société a fermé. \n\nVous recevez ce jour un appel du service client.","objet":"","profil":"Le compte de l'entreprise n'a plus lieu d'être. Cependant, possesseur de plusierus véhicules, vous espérez que l'on vous propose de rester client particulier à des tarifs avantageux.\n\nVous demandez un @mail de confirmation de l'entretien garantissant les mêmes conditions tarifaires."},{"activite_type":"II","competence_canal":"- Gérer des situations de rétention client\n\n- B to C\n\n- Téléphone\n\n- Production écrite : SMS","num_appel":"2-05","role":"Vous êtes M.  LARBI La dernière commande ne s'est pas bien déroulée. Vous êtes contactée par le service client qui vous propose des avantages. Vous acceptez l'offre si 'est avantageux pour vous.\n\nVous demandez une confirmation de l'offre par SMS","objet":"","profil":"Vous êtes M.  LARBI La dernière commande ne s'est pas bien déroulée. Vous êtes très déçue des nombreux retards de livraison. Surtout vous n'avez jamais été recontacté par le service client concernant votre réclamation à ce sujet."},{"activite_type":"II","competence_canal":"- Gérer des situations de rétention client\n\n- B to C\n\n- Téléphone\n\n- Production écrite : @mail","num_appel":"3-05","role":"","objet":"","profil":""},{"activite_type":"II","competence_canal":"- Gérer des situations de rétention client\n\n- B to C\n\n- Téléphone\n\n- Production écrite : SMS","num_appel":"4-05","role":"","objet":"","profil":""},{"activite_type":"II","competence_canal":"- Assurer le recouvrement amiable de créances\n\n- B to C\n\n- Téléphone\n\n- Production écrite : @mail","num_appel":"1-06","role":"Vous êtes Mme Fabienne FIGNON La dernière échéance n'est pas passée en banque. Votre situation est solvable, vous n'avez aucun souci pour payer la somme restant due.\n\nVous demandez une confirmation des suites de l'entretien par @mail","objet":"","profil":"Carte VISA\n2536 0033 9612 4756\nDate de validité : 11/N+2\nCryptogramme : 406"},{"activite_type":"II","competence_canal":"- Assurer le recouvrement amiable de créances\n\n- B to C\n\n- Téléphone\n\n- Production écrite : SMS","num_appel":"2-06","role":"Vous êtes M. Christian BASILEAU La dernière échéance n'est pas passée en banque. Votre situation est solvable, vous n'avez aucun souci pour payer la somme restant due.\n\nVous demandez une confirmation des suites de l'entretien par @mail","objet":"","profil":""},{"activite_type":"II","competence_canal":"- Assurer le recouvrement amiable de créances\n\n- B to C\n\n- Téléphone\n\n- Production écrite : @mail","num_appel":"3-06","role":"","objet":"","profil":""},{"activite_type":"II","competence_canal":"- Assurer le recouvrement amiable de créances\n\n- B to C\n\n- Téléphone\n\n- Production écrite : SMS","num_appel":"4-06","role":"","objet":"","profil":""}],"centres":[{"region":"Ile de France","departement":"75","nom":"LIDAS","adresse":"24 - 26 Quai des Celestins","cp":"75004","ville":"Paris","telephone":"01 42 72 39 65"},{"region":"Ile de France","departement":"77","nom":"FEU ROUGE","adresse":"84 Avenue de la Victoire","cp":"77100","ville":"Meaux","telephone":"01 56 23 89 74"},{"region":"Ile de France","departement":"78","nom":"LIDAS","adresse":"1 Rue des Chantiers","cp":"78000","ville":"Versailles","telephone":"01 39 49 06 85"},{"region":"Ile de France","departement":"91","nom":"CENTRE AUTO POINT F","adresse":"Boulevard de l'Europe, Centre Commercial Evry2","cp":"91000","ville":"Evry","telephone":"01 60 77 92 16"},{"region":"Ile de France","departement":"92","nom":"SLEEPY","adresse":"59 Avenue Vladimir Ilitch Lénine","cp":"92000","ville":"Nanterre","telephone":"01 41 37 08 08"},{"region":"Ile de France","departement":"93","nom":"SLEEPY","adresse":"109, Avenue de Stalingrad","cp":"93240","ville":"Stains","telephone":"01 48 21 15 17"},{"region":"Ile de France","departement":"94","nom":"SLEEPY","adresse":"Centre Commercial Régional Créteil Soleil","cp":"94000","ville":"Créteil","telephone":"01 43 77 10 16"},{"region":"Ile de France","departement":"95","nom":"LIDAS","adresse":"112 Route de Pontoise","cp":"95100","ville":"Argenteuil","telephone":"01 30 25 50 12"},{"region":"Nord - Ouest","departement":"14","nom":"SLEEPY","adresse":"77 Rue de Falaise","cp":"14000","ville":"Caen","telephone":"02 31 82 38 10"},{"region":"Nord - Ouest","departement":"35","nom":"LIDAS","adresse":"311 Rue de Nantes","cp":"35000","ville":"Rennes","telephone":"02 99 55 08 32"},{"region":"Nord - Ouest","departement":"37","nom":"SLEEPY","adresse":"221 Avenue de Grammont","cp":"37000","ville":"Tours","telephone":"02 47 61 62 29"},{"region":"Nord - Ouest","departement":"44","nom":"LIDAS","adresse":"8 - 10 Bvd Robert Schuman","cp":"44300","ville":"Nantes","telephone":"02 40 40 24 23"},{"region":"Nord - Ouest","departement":"45","nom":"LIDAS","adresse":"45 Avenue de Paris","cp":"45000","ville":"Orléans","telephone":"02 38 54 57 45"},{"region":"Nord - Est","departement":"21","nom":"SLEEPY","adresse":"64 Avenue Raymond Poincaré","cp":"21000","ville":"Dijon","telephone":"03 80 17 18 45"},{"region":"Nord - Est","departement":"25","nom":"FEU ROUGE","adresse":"CC GEANT - Rue René Char","cp":"25000","ville":"Besançon","telephone":"03 81 48 33 63"},{"region":"Nord - Est","departement":"54","nom":"LIDAS","adresse":"195 Avenue de la Libération","cp":"54000","ville":"Nancy","telephone":"03 83 98 67 67"},{"region":"Nord - Est","departement":"59","nom":"LIDAS","adresse":"112 Boulevard de la Liberté","cp":"59800","ville":"Lille","telephone":"03 20 54 90 25"},{"region":"Nord - Est","departement":"67","nom":"EUROBASTER","adresse":"280 Avenue de Colmar","cp":"67100","ville":"Strasbourg","telephone":"03 88 65 65 40"},{"region":"Sud - Ouest","departement":"31","nom":"LIDAS","adresse":"166 Route de Revel","cp":"31400","ville":"Toulouse","telephone":"05 61 34 95 96"},{"region":"Sud - Ouest","departement":"33","nom":"LIDAS","adresse":"88 Bld George V","cp":"33000","ville":"Bordeaux","telephone":"05 56 96 67 67"},{"region":"Sud - Ouest","departement":"46","nom":"EUROBASTER","adresse":"Route de Toulouse","cp":"46000","ville":"Cahors","telephone":"05 65 53 20 20"},{"region":"Sud - Ouest","departement":"86","nom":"SLEEPY","adresse":"38 Bld du Grand Cerf","cp":"86000","ville":"Poitiers","telephone":"05 49 58 05 05"},{"region":"Sud - Ouest","departement":"87","nom":"SLEEPY","adresse":"68 Avenue Garibaldi","cp":"87000","ville":"Limoges","telephone":"05 55 79 35 36"},{"region":"Sud - Est","departement":"13","nom":"FEU ROUGE","adresse":"Centre Commercial La Valentine","cp":"13368","ville":"Marseille","telephone":"04 91 89 82 56"},{"region":"Sud - Est","departement":"34","nom":"SLEEPY","adresse":"42 Rue Henri Mares","cp":"34000","ville":"Montpellier","telephone":"04 67 61 06 56"},{"region":"Sud - Est","departement":"38","nom":"CENTRE AUTO POINT F","adresse":"106 Rue des Alliés","cp":"38100","ville":"Grenoble","telephone":"04 76 78 30 31"},{"region":"Sud - Est","departement":"63","nom":"SLEEPY","adresse":"47 bis, Bld J.Baptiste Dumas","cp":"63000","ville":"Clermont - Ferrand","telephone":"04 73 92 54 89"},{"region":"Sud - Est","departement":"69","nom":"LIDAS","adresse":"57 Rue Challemel Lacour","cp":"69007","ville":"Lyon","telephone":"04 72 77 94 40"}],"info_generale":["La charte d'accueil\n\nEn réception d'appels : « Bienvenue chez ON THE ROAD, (votre prénom) à votre écoute... Bonjour M. /ou Mme »\nEn émission d'appels : « Bonjour, (votre prénom) d'ON THE ROAD. Vous êtes bien M. /ou Mme X... »","Le réseau de distribution.\n\nLa société ON THE ROAD ne possède pas de magasin physique. \nElle vend ses produits et services en ligne grâce à son site e-commerce www.ontheroad.com. \nLes livraisons se font soit au domicile du client, soit chez l'un des 28 centres partenaires sur le territoire national qui assure aussi les prestations d'ON THE ROAD. \n\nDans le cadre de partenariat, ON THE ROAD intègre, dans son catalogue, certaines prestations des centres partenaires. \n\nTous les tarifs du catalogue sont affichés en TTC. \n\nPour les professionnels, la TVA est récupérable. \n\nON THE ROAD a su se démarquer de ses concurrents en proposant également des « services + » à ses clients en leur permettant de les soulager d'une partie des démarches avec les services public ou institutionnels, telles que la demande d'immatriculation de nouveaux véhicules, ainsi que le dépôt de plainte en ligne en cas de vol de véhicule."],"cgv":["EXTRAIT DES CONDITIONS GÉNÉRALES DE VENTE DE L'ENTREPRISE ON THE ROAD"],"services_plus":["Foire Aux Questions concernant le Services + à destination des conseillers","1. Porter Plainte","1 Quelles sont les modalités pour porter plainte ?","Si vous avez été victime d’une infraction, vous pouvez porter plainte afin d’informer la justice des faits commis à votre encontre. Il est possible de porter plainte contre une personne physique, une personne morale (une entreprise, une association…) ou contre X, si l'auteur des faits est inconnu. \n\nLa victime d’une infraction peut déposer plainte :\n\n- dans un commissariat de police ;\n- dans une brigade de gendarmerie ;\n- ou directement auprès du procureur de la République.\n\nMis à jour le 23 avril 2023 - Direction de l'information légale et administrative (Premier ministre), Ministère en charge de la justice","2 Comment porter plainte en ligne?","Pré-plainte en ligne (Service en ligne)\n\nPermet d'effectuer une pré-déclaration en ligne pour une atteinte aux biens (vol ou escroquerie par exemple) ou certains faits à caractère discriminatoire par un auteur inconnu.\n\nAprès la pré-déclaration en ligne, vous devez prendre rendez-vous au commissariat ou à la brigade de gendarmerie de votre choix pour signer la plainte.\n\nLes policiers ou les gendarmes peuvent décider de conserver les éléments de preuve que vous apportez.\n\nAttention : Vous devez être personnellement victime de l'infraction.\n\nMis à jour le 25 janvier 2022 - Direction de l'information légale et administrative (Première ministre)","Porter plainte en ligne Porter plainte auprès du procureur de la République","2.  Immatriculation d'un véhicule","Vous avez acheté un véhicule neuf en France ou à l'étranger ?\n\nVous devez le faire immatriculer et obtenir une carte grise (désormais appelée certificat d'immatriculation) dans un délai d'un mois après l'achat. \n\nLa demande de carte grise s'effectue sur le site internet de l'ANTS (Agence Nationale des Titres Sécurisés.)\n\nVous pouvez également passer par un professionnel de l'automobile.","Dans la plupart des cas, la demande d'immatriculation peut être effectuée directement auprès du professionnel qui vous vend le véhicule.\n\nSinon, vous pouvez vous-même effectuer la demande sur internet en utilisant le téléservice de l'Agence nationale des titres sécurisés (ANTS).","Mes documents à fournir:\n\n5 documents à fournir\n\n- Le cerfa 13750*07 ( sert de demande d’immatriculation , certificat de conformité ) \n- Une pièce d’identité en cours de validité\n- Le certificat de conformité délivré par le constructeur ou équivalent\n- Un justificatif de domicile de moins de 6 mois\n- Le quitus fiscal (véhicule acquis à l'étranger)\n\nSi vous faites la démarche pour quelqu’un d’autre, un mandat doit être fourni ainsi que la pièce d’identité"]};
+
+/* ---------------- STORAGE ------------------------------- */
+const STORAGE_KEY = "tmk_otr_v1";
+const FORMATEUR_PWD_KEY = "tmk_otr_pwd";
+const DEFAULT_PWD = "tmk2026";
+
+function loadStore(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw){
+      // 1ère initialisation : on copie la seed
+      const fresh = structuredClone(SEED_DATA);
+      fresh.sessions = []; // historique des appels joués
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
+      return fresh;
+    }
+    const data = JSON.parse(raw);
+    if(!data.sessions) data.sessions = [];
+    return data;
+  }catch(e){
+    console.error("loadStore", e);
+    const fresh = structuredClone(SEED_DATA);
+    fresh.sessions = [];
+    return fresh;
+  }
+}
+function saveStore(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(STORE));
+}
+function getFormateurPwd(){
+  return localStorage.getItem(FORMATEUR_PWD_KEY) || DEFAULT_PWD;
+}
+function setFormateurPwd(pwd){
+  localStorage.setItem(FORMATEUR_PWD_KEY, pwd);
+}
+
+let STORE = loadStore();
+
+/* ---------------- APP STATE ----------------------------- */
+const STATE = {
+  user: null,               // { name, role: 'stagiaire'|'formateur' }
+  currentTab: null,         // tab id
+  currentCase: null,        // ref of case currently played by stagiaire
+  currentSession: null,     // session being recorded
+};
+
+/* ---------------- HELPERS ------------------------------- */
+const $ = (sel, root) => (root||document).querySelector(sel);
+const $$ = (sel, root) => Array.from((root||document).querySelectorAll(sel));
+
+function el(tag, attrs={}, ...children){
+  const e = document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs||{})){
+    if(k === "class") e.className = v;
+    else if(k === "html") e.innerHTML = v;
+    else if(k === "text") e.textContent = v;
+    else if(k.startsWith("on") && typeof v === "function") e.addEventListener(k.slice(2), v);
+    else if(v !== null && v !== undefined && v !== false) e.setAttribute(k, v);
+  }
+  for(const c of children){
+    if(c == null || c === false) continue;
+    if(Array.isArray(c)) c.forEach(cc=>cc && e.appendChild(typeof cc==="string"?document.createTextNode(cc):cc));
+    else if(typeof c === "string") e.appendChild(document.createTextNode(c));
+    else e.appendChild(c);
+  }
+  return e;
+}
+function escapeHtml(s){
+  if(s==null) return "";
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+}
+function nl2br(s){
+  return escapeHtml(s).replace(/\n/g, "<br>");
+}
+function fmtMoney(n){
+  if(n==null||n==="") return "—";
+  const v = typeof n === "number" ? n : parseFloat(n);
+  if(isNaN(v)) return "—";
+  return v.toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
+}
+function fmtDate(s){
+  if(!s) return "—";
+  // déjà au format JJ/MM/AAAA ?
+  if(/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+  return s;
+}
+function todayFr(){
+  const d = new Date();
+  return String(d.getDate()).padStart(2,"0") + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + d.getFullYear();
+}
+function nowTimeFr(){
+  const d = new Date();
+  return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+}
+function initials(name){
+  if(!name) return "??";
+  return name.split(/\s+/).filter(Boolean).slice(0,2).map(p=>p[0].toUpperCase()).join("");
+}
+function fullName(c){
+  return [c.civilite, c.prenom, c.nom].filter(Boolean).join(" ").trim();
+}
+function societe(c){
+  return c.raison_sociale && c.raison_sociale.trim() ? c.raison_sociale : "Particulier";
+}
+
+function toast(msg, type="info"){
+  const t = el("div", {class:"toast " + (type||"")}, msg);
+  $("#toastZone").appendChild(t);
+  setTimeout(()=>{t.style.opacity="0";t.style.transform="translateX(20px)";t.style.transition="all .3s";setTimeout(()=>t.remove(),300)}, 3000);
+}
+
+/* ---------------- MODAL --------------------------------- */
+function openModal({title, body, foot, size}){
+  const m = $("#modal");
+  const box = $("#modalBox");
+  box.classList.remove("large","small");
+  if(size) box.classList.add(size);
+  $("#modalTitle").textContent = title || "";
+  const b = $("#modalBody");
+  b.innerHTML = "";
+  if(typeof body === "string") b.innerHTML = body;
+  else if(body) b.appendChild(body);
+  const f = $("#modalFoot");
+  f.innerHTML = "";
+  if(foot){
+    if(typeof foot === "string") f.innerHTML = foot;
+    else if(Array.isArray(foot)) foot.forEach(b=>b && f.appendChild(b));
+    else f.appendChild(foot);
+  }else{
+    f.appendChild(el("button",{class:"btn outline", type:"button", onclick:closeModal}, "Fermer"));
+  }
+  m.classList.add("visible");
+}
+function closeModal(){
+  $("#modal").classList.remove("visible");
+}
+$("#modal").addEventListener("click", e => {
+  if(e.target.id === "modal") closeModal();
+});
+
+function confirmDialog(question, onConfirm){
+  openModal({
+    title:"Confirmer",
+    body: el("p", {}, question),
+    size:"small",
+    foot: [
+      el("button",{class:"btn outline", type:"button", onclick:closeModal}, "Annuler"),
+      el("button",{class:"btn danger", type:"button", onclick: ()=>{closeModal(); onConfirm();}}, "Confirmer"),
+    ]
+  });
+}
+
+/* ---------------- LOGIN --------------------------------- */
+function setupLogin(){
+  $$(".role-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      $$(".role-btn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      const role = btn.dataset.role;
+      $("#formateurPwdField").style.display = role === "formateur" ? "block" : "none";
+      $("#loginScreen").dataset.role = role;
+    });
+  });
+
+  // Default = stagiaire
+  $$(".role-btn")[0].click();
+
+  $("#btnLogin").addEventListener("click", doLogin);
+  $("#loginName").addEventListener("keydown", e => { if(e.key === "Enter") doLogin(); });
+  $("#loginPwd").addEventListener("keydown", e => { if(e.key === "Enter") doLogin(); });
+
+  $("#btnLogout").addEventListener("click", () => {
+    STATE.user = null;
+    STATE.currentCase = null;
+    STATE.currentSession = null;
+    $("#app").classList.remove("visible");
+    $("#loginScreen").style.display = "flex";
+    $("#loginName").value = "";
+    $("#loginPwd").value = "";
+  });
+}
+
+function doLogin(){
+  const name = $("#loginName").value.trim();
+  const role = $("#loginScreen").dataset.role || "stagiaire";
+  if(!name){
+    toast("Merci de saisir votre nom", "error");
+    $("#loginName").focus();
+    return;
+  }
+  if(role === "formateur"){
+    const pwd = $("#loginPwd").value;
+    if(pwd !== getFormateurPwd()){
+      toast("Code formateur incorrect", "error");
+      $("#loginPwd").focus();
+      return;
+    }
+  }
+  STATE.user = { name, role };
+  $("#loginScreen").style.display = "none";
+  $("#app").classList.add("visible");
+  $("#userName").textContent = name;
+  $("#userRole").textContent = role === "formateur" ? "Formateur" : "Stagiaire";
+  $("#userAvatar").textContent = initials(name);
+  $("#userAvatar").classList.toggle("formateur", role === "formateur");
+  buildNav();
+  navigateTo(role === "formateur" ? "tableau" : "accueil");
+}
+
+/* ---------------- NAVIGATION ---------------------------- */
+const TABS_STAGIAIRE = [
+  { id:"accueil",    label:"🏠 Accueil" },
+  { id:"crm",        label:"📞 Simulation d'appel" },
+  { id:"infos",      label:"📚 Infos générales" },
+  { id:"catalogue",  label:"🛞 Catalogue" },
+  { id:"centres",    label:"📍 Centres agréés" },
+  { id:"manuel",     label:"📖 Manuel" },
+];
+const TABS_FORMATEUR = [
+  { id:"tableau",    label:"📊 Tableau de bord" },
+  { id:"cas",        label:"📋 Cas clients" },
+  { id:"clients",    label:"👥 Fiches clients (BDD)" },
+  { id:"catalogue",  label:"🛞 Catalogue produits" },
+  { id:"sessions",   label:"📞 Sessions stagiaires" },
+  { id:"centres",    label:"📍 Centres agréés" },
+  { id:"infos",      label:"📚 Infos générales" },
+  { id:"params",     label:"⚙️ Paramètres" },
+  { id:"manuel",     label:"📖 Manuel" },
+];
+
+function buildNav(){
+  const tabs = STATE.user.role === "formateur" ? TABS_FORMATEUR : TABS_STAGIAIRE;
+  const nav = $("#navTabs");
+  nav.innerHTML = "";
+  tabs.forEach(t => {
+    const b = el("button", {
+      class:"nav-tab",
+      "data-tab":t.id,
+      type:"button",
+      onclick: () => navigateTo(t.id),
+      html: t.label,
+    });
+    nav.appendChild(b);
+  });
+}
+
+function navigateTo(tabId){
+  STATE.currentTab = tabId;
+  $$(".nav-tab").forEach(b => b.classList.toggle("active", b.dataset.tab === tabId));
+  const main = $("#mainView");
+  main.innerHTML = "";
+  // Render the right view
+  const render = VIEWS[tabId];
+  if(render){
+    render(main);
+  }else{
+    main.innerHTML = "<p>Page introuvable.</p>";
+  }
+  // scroll top
+  window.scrollTo(0,0);
+}
+
+/* ---------------- VIEWS REGISTRY ------------------------ */
+const VIEWS = {};
+
+/* === ACCUEIL STAGIAIRE === */
+VIEWS.accueil = function(root){
+  const u = STATE.user.name;
+  const banner = el("div", {class:"welcome-banner"});
+  banner.innerHTML = `
+    <h1>Bonjour ${escapeHtml(u.split(" ")[0])} 👋</h1>
+    <p>Bienvenue sur la plateforme de simulation Relation Client de TMK Performances.
+    Ici vous allez jouer des appels entrants ou sortants en vous mettant dans la peau d'un conseiller du service client de <strong>On The Road</strong>.</p>
+    <div class="actions">
+      <button class="btn orange" type="button" id="btnTirage">🎲 Tirage aléatoire d'un cas</button>
+      <button class="btn" type="button" id="btnChoixCas">📋 Choisir un cas</button>
+    </div>
+  `;
+  root.appendChild(banner);
+
+  // Statistiques perso
+  const mySessions = STORE.sessions.filter(s => s.stagiaire === u);
+  const mySessionsByCompetence = {};
+  mySessions.forEach(s => {
+    const k = s.competence || "Non défini";
+    mySessionsByCompetence[k] = (mySessionsByCompetence[k]||0)+1;
+  });
+
+  const kpis = el("div", {class:"grid-4 mb-3"});
+  kpis.innerHTML = `
+    <div class="kpi"><span class="kpi-label">Cas disponibles</span><span class="kpi-value">${STORE.cas.length}</span><span class="kpi-sub">briefs à jouer</span></div>
+    <div class="kpi orange"><span class="kpi-label">Mes appels joués</span><span class="kpi-value">${mySessions.length}</span><span class="kpi-sub">depuis votre 1ère session</span></div>
+    <div class="kpi green"><span class="kpi-label">Compétences travaillées</span><span class="kpi-value">${Object.keys(mySessionsByCompetence).length}</span><span class="kpi-sub">/ 7 compétences du référentiel</span></div>
+    <div class="kpi yellow"><span class="kpi-label">Catalogue OTR</span><span class="kpi-value">${STORE.catalogue.length}</span><span class="kpi-sub">produits & services</span></div>
+  `;
+  root.appendChild(kpis);
+
+  // Activités regroupées
+  const sectionTitle = el("h2", {class:"mb-2"}, "📋 Liste des cas disponibles");
+  root.appendChild(sectionTitle);
+
+  const activityGrid = el("div", {class:"activity-grid"});
+  STORE.cas.forEach(c => {
+    const client = STORE.clients.find(cl => cl.ref === c.num_appel);
+    const tile = el("button", {
+      class:"activity-tile",
+      type:"button",
+      onclick: () => startCase(c.num_appel),
+    });
+    tile.innerHTML = `
+      <span class="num">${escapeHtml(c.num_appel)}</span>
+      <h4>${escapeHtml(client ? fullName(client) : "Cas " + c.num_appel)}</h4>
+      <small>${escapeHtml((c.competence_canal || "").split("\n")[0].replace(/^-\s*/,"").substring(0,60))}</small>
+      <span class="badge-pill ${c.activite_type === "I" ? "pill-navy" : "pill-orange"}">
+        ${c.activite_type === "I" ? "Activité I" : c.activite_type === "II" ? "Activité II" : c.activite_type}
+      </span>
+    `;
+    activityGrid.appendChild(tile);
+  });
+  root.appendChild(activityGrid);
+
+  $("#btnTirage").addEventListener("click", () => {
+    const c = STORE.cas[Math.floor(Math.random()*STORE.cas.length)];
+    if(c) startCase(c.num_appel);
+  });
+  $("#btnChoixCas").addEventListener("click", () => {
+    document.querySelector(".activity-grid").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+};
+
+/* Function used to launch a case from accueil */
+function startCase(numAppel){
+  const cas = STORE.cas.find(c => c.num_appel === numAppel);
+  if(!cas){ toast("Cas introuvable", "error"); return; }
+  const client = STORE.clients.find(c => c.ref === numAppel);
+  if(!client){ toast("Fiche client introuvable pour ce cas", "error"); return; }
+
+  // Create a session
+  STATE.currentCase = numAppel;
+  STATE.currentSession = {
+    id: "S" + Date.now(),
+    stagiaire: STATE.user.name,
+    case_ref: numAppel,
+    competence: client.competence,
+    started_at: new Date().toISOString(),
+    historisation: [], // {date, action, comment}
+    productions: {},   // {mail, sms, courrier, etc}
+    finished: false,
+  };
+  navigateTo("crm");
+}
+
+
+/* ============ PART 2 ============ */
+
+/* === CRM = Simulation d'appel === */
+VIEWS.crm = function(root){
+  if(!STATE.currentCase){
+    root.appendChild(el("div", {class:"empty"}, [
+      el("div", {class:"ico"}, "📞"),
+      el("h4", {}, "Aucune simulation en cours"),
+      el("p", {}, "Choisissez un cas depuis l'accueil pour démarrer une simulation d'appel."),
+      el("button", {class:"btn orange mt-2", type:"button", onclick: ()=>navigateTo("accueil")}, "Aller à l'accueil"),
+    ]));
+    return;
+  }
+  const cas = STORE.cas.find(c => c.num_appel === STATE.currentCase);
+  const client = STORE.clients.find(c => c.ref === STATE.currentCase);
+  const session = STATE.currentSession;
+
+  // Layout 2 colonnes
+  const wrap = el("div", {class:"crm"});
+
+  // ---- ASIDE GAUCHE : Fiche client + actions ----
+  const aside = el("div", {class:"crm-aside"});
+  aside.appendChild(buildClientCard(client, cas));
+  wrap.appendChild(aside);
+
+  // ---- PANEL DROITE : mission + historisation + actions ----
+  const panel = el("div", {class:"crm-main"});
+
+  // Mission box
+  const mission = el("div", {class:"mission-box"});
+  mission.innerHTML = `
+    <h4>🎯 Votre mission, en tant que conseiller(e) du service client On The Road</h4>
+    <p>${nl2br(client.mission || "")}</p>
+  `;
+  panel.appendChild(mission);
+
+  // Sub-tabs
+  const subtabs = el("div", {class:"subtabs no-print"});
+  const subtabs_items = [
+    { id:"historisation", label:"📝 Historisation de l'appel" },
+    { id:"production", label:"📨 Production écrite" },
+    { id:"references", label:"🔍 Références utiles" },
+  ];
+  subtabs_items.forEach((s,i) => {
+    const t = el("button", {class:"subtab" + (i===0?" active":""), "data-sub":s.id, type:"button"}, s.label);
+    t.addEventListener("click", () => {
+      $$(".subtab").forEach(x=>x.classList.remove("active"));
+      t.classList.add("active");
+      $$(".sub-pane").forEach(x=>x.classList.add("hide"));
+      $("#sub-"+s.id).classList.remove("hide");
+    });
+    subtabs.appendChild(t);
+  });
+  panel.appendChild(subtabs);
+
+  // ---- Sub pane : historisation ----
+  const subHist = el("div", {class:"sub-pane card", id:"sub-historisation"});
+  subHist.appendChild(el("div", {class:"card-header"}, [
+    el("h2", {}, "Historisation"),
+    el("span", {class:"text-muted text-small"}, "Tracez chaque action effectuée pendant l'appel"),
+  ]));
+
+  // Existing events from BDD
+  const existingEvents = [];
+  for(let i=1;i<=6;i++){
+    const d = client[`evt${i}_date`];
+    const e = client[`evt${i}`];
+    if(d || e){
+      existingEvents.push({ date: d, what: e, source: "BDD" });
+    }
+  }
+
+  const histList = el("ul", {class:"timeline", id:"histList"});
+  function renderHist(){
+    histList.innerHTML = "";
+    if(existingEvents.length === 0 && session.historisation.length === 0){
+      const empty = el("div", {class:"timeline-empty"}, "Aucun événement historisé pour ce client.");
+      histList.appendChild(empty);
+      return;
+    }
+    existingEvents.forEach(ev => {
+      histList.appendChild(el("li", {}, [
+        el("span", {class:"when"}, fmtDate(ev.date)),
+        el("span", {class:"what"}, ev.what || "—"),
+        el("span", {class:"who-edit"}, "Historique BDD"),
+      ]));
+    });
+    session.historisation.forEach(h => {
+      histList.appendChild(el("li", {class:"new"}, [
+        el("span", {class:"when"}, h.date + " · " + h.time),
+        el("span", {class:"what"}, h.action),
+        h.comment ? el("span", {class:"text-muted text-small", html:"<br>💬 " + escapeHtml(h.comment)}) : null,
+        el("span", {class:"who-edit"}, "Saisi pendant l'appel · " + STATE.user.name),
+      ].filter(Boolean)));
+    });
+  }
+  subHist.appendChild(histList);
+
+  // Add event form
+  const addBox = el("div", {class:"well mt-2"});
+  addBox.appendChild(el("h4", {}, "➕ Ajouter une historisation"));
+  const addAction = el("input", {type:"text", id:"newAction", placeholder:"Ex : Demande de devis pour 4 pneus VITO"});
+  const addComment = el("textarea", {id:"newComment", placeholder:"Commentaire / précisions (optionnel)"});
+  const btnRow = el("div", {class:"flex gap-1 mt-1"}, [
+    el("button", {class:"btn orange", type:"button", onclick: () => {
+      const action = addAction.value.trim();
+      if(!action){ toast("Décrivez l'action effectuée", "warn"); return; }
+      session.historisation.push({
+        date: todayFr(),
+        time: nowTimeFr(),
+        action,
+        comment: addComment.value.trim(),
+      });
+      addAction.value = "";
+      addComment.value = "";
+      renderHist();
+      toast("Historisation ajoutée", "success");
+    }}, "Ajouter"),
+    el("button", {class:"btn outline", type:"button", onclick: () => {
+      addAction.value = "";
+      addComment.value = "";
+    }}, "Effacer"),
+  ]);
+  addBox.appendChild(el("div", {class:"form-field"}, [
+    el("label", {}, "Action effectuée *"),
+    addAction,
+  ]));
+  addBox.appendChild(el("div", {class:"form-field"}, [
+    el("label", {}, "Commentaire"),
+    addComment,
+  ]));
+  addBox.appendChild(btnRow);
+  subHist.appendChild(addBox);
+
+  // Wrap-up
+  const wrap1 = el("div", {class:"well mt-2"});
+  wrap1.appendChild(el("h4", {}, "🎬 Wrap-up de l'appel"));
+  const wrapTextArea = el("textarea", {id:"wrapNotes", placeholder:"Synthèse de l'appel : motif, solution, prochaine étape, action de suivi...", rows:4});
+  wrapTextArea.value = session.wrap_up || "";
+  wrapTextArea.addEventListener("input", () => { session.wrap_up = wrapTextArea.value; });
+  wrap1.appendChild(el("div", {class:"form-field"}, [
+    el("label", {}, "Notes de fin d'appel"),
+    wrapTextArea,
+  ]));
+  subHist.appendChild(wrap1);
+
+  panel.appendChild(subHist);
+  renderHist();
+
+  // ---- Sub pane : production écrite ----
+  const subProd = el("div", {class:"sub-pane card hide", id:"sub-production"});
+  subProd.appendChild(el("div", {class:"card-header"}, [
+    el("h2", {}, "Production écrite"),
+    el("span", {class:"text-muted text-small"}, "Mail, SMS ou courrier de confirmation"),
+  ]));
+
+  const prodTypes = [
+    {id:"mail", label:"📧 E-mail"},
+    {id:"sms", label:"📱 SMS"},
+    {id:"courrier", label:"✉️ Courrier"},
+  ];
+  const prodTabs = el("div", {class:"subtabs"});
+  prodTypes.forEach((p,i) => {
+    const tt = el("button", {class:"subtab" + (i===0?" active":""), "data-prod":p.id, type:"button"}, p.label);
+    tt.addEventListener("click", () => {
+      $$(".prod-pane").forEach(x=>x.classList.add("hide"));
+      $$("[data-prod]").forEach(x=>x.classList.remove("active"));
+      tt.classList.add("active");
+      $("#prod-"+p.id).classList.remove("hide");
+    });
+    prodTabs.appendChild(tt);
+  });
+  subProd.appendChild(prodTabs);
+
+  // Mail form
+  const mailPane = el("div", {class:"prod-pane", id:"prod-mail"});
+  const fromInp = el("input", {type:"text", value:`${STATE.user.name.toLowerCase().replace(/\s+/g,".")}@ontheroad.com`});
+  const toInp = el("input", {type:"text", value: client.mail_1 || ""});
+  const subjInp = el("input", {type:"text", placeholder:"Ex : Confirmation de votre commande"});
+  const mailBody = el("textarea", {rows:8, placeholder:`Bonjour ${client.civilite||""} ${client.nom||""},\n\n…\n\nCordialement,\n${STATE.user.name}\nConseiller(e) On The Road`});
+  ;(session.productions.mail = session.productions.mail || {});
+  // restore
+  fromInp.value = session.productions.mail.from || fromInp.value;
+  toInp.value = session.productions.mail.to || toInp.value;
+  subjInp.value = session.productions.mail.subject || "";
+  mailBody.value = session.productions.mail.body || "";
+  ;[fromInp, toInp, subjInp, mailBody].forEach(i => i.addEventListener("input", () => {
+    session.productions.mail = {
+      from: fromInp.value, to: toInp.value, subject: subjInp.value, body: mailBody.value,
+    };
+  }));
+  mailPane.appendChild(el("div", {class:"form-field"}, [el("label",{},"De"), fromInp]));
+  mailPane.appendChild(el("div", {class:"form-field"}, [el("label",{},"À"), toInp]));
+  mailPane.appendChild(el("div", {class:"form-field"}, [el("label",{},"Objet"), subjInp]));
+  mailPane.appendChild(el("div", {class:"form-field"}, [el("label",{},"Message"), mailBody]));
+  subProd.appendChild(mailPane);
+
+  // SMS form
+  const smsPane = el("div", {class:"prod-pane hide", id:"prod-sms"});
+  const smsTo = el("input", {type:"text", value: client.portable_1 || ""});
+  const smsBody = el("textarea", {rows:5, maxlength:300, placeholder:"Texte du SMS (≤ 300 caractères)"});
+  ;(session.productions.sms = session.productions.sms || {});
+  smsTo.value = session.productions.sms.to || smsTo.value;
+  smsBody.value = session.productions.sms.body || "";
+  const smsCounter = el("small", {class:"text-muted"}, "0 / 300 caractères");
+  smsBody.addEventListener("input", () => {
+    smsCounter.textContent = `${smsBody.value.length} / 300 caractères`;
+    session.productions.sms = { to: smsTo.value, body: smsBody.value };
+  });
+  smsTo.addEventListener("input", () => { session.productions.sms.to = smsTo.value; });
+  smsPane.appendChild(el("div", {class:"form-field"}, [el("label",{},"Destinataire"), smsTo]));
+  smsPane.appendChild(el("div", {class:"form-field"}, [el("label",{},"Message"), smsBody, smsCounter]));
+  subProd.appendChild(smsPane);
+
+  // Courrier form
+  const courPane = el("div", {class:"prod-pane hide", id:"prod-courrier"});
+  const courObj = el("input", {type:"text", placeholder:"Objet du courrier"});
+  const courBody = el("textarea", {rows:10, placeholder:`${STATE.user.name}\nOn The Road - Service Client\n\n${client.adresse_f||""}\n${client.cp_f||""} ${client.ville_f||""}\n\nÀ ${client.ville_f||""}, le ${todayFr()}\n\nObjet : …\n\n${client.civilite||""} ${client.nom||""},\n\n…\n\nCordialement,\n${STATE.user.name}`});
+  ;(session.productions.courrier = session.productions.courrier || {});
+  courObj.value = session.productions.courrier.subject || "";
+  courBody.value = session.productions.courrier.body || "";
+  courObj.addEventListener("input", () => { session.productions.courrier.subject = courObj.value; });
+  courBody.addEventListener("input", () => { session.productions.courrier.body = courBody.value; });
+  courPane.appendChild(el("div", {class:"form-field"}, [el("label",{},"Objet"), courObj]));
+  courPane.appendChild(el("div", {class:"form-field"}, [el("label",{},"Corps du courrier"), courBody]));
+  subProd.appendChild(courPane);
+
+  panel.appendChild(subProd);
+
+  // ---- Sub pane : références utiles ----
+  const subRef = el("div", {class:"sub-pane card hide", id:"sub-references"});
+  subRef.innerHTML = `
+    <div class="card-header"><h2>Références utiles pour ce cas</h2><span class="text-muted text-small">Prix catalogue, centres agréés proches, infos générales</span></div>
+  `;
+  // Centres agréés proches
+  const dept = (client.cp_f || "").substring(0,2);
+  const localCentres = STORE.centres.filter(c => c.departement === dept);
+  if(localCentres.length){
+    subRef.appendChild(el("h4", {class:"mb-1 mt-2"}, `📍 Centres agréés dans le ${dept}`));
+    localCentres.forEach(c => {
+      const item = el("div", {class:"well mt-1"});
+      item.innerHTML = `<strong>${escapeHtml(c.nom)}</strong> — ${escapeHtml(c.adresse)}, ${escapeHtml(c.cp)} ${escapeHtml(c.ville)}<br><small>📞 ${escapeHtml(c.telephone)}</small>`;
+      subRef.appendChild(item);
+    });
+  }
+  // Lien rapide catalogue
+  subRef.appendChild(el("div", {class:"mt-2"}, [
+    el("button", {class:"btn outline", type:"button", onclick: ()=>navigateTo("catalogue")}, "🛞 Ouvrir le catalogue produits & services"),
+    el("span", {}, " "),
+    el("button", {class:"btn outline", type:"button", onclick: ()=>navigateTo("infos")}, "📚 Infos générales On The Road"),
+  ]));
+  panel.appendChild(subRef);
+
+  // Action bar bas de panel
+  const closeBar = el("div", {class:"flex gap-1 mt-2 no-print"});
+  closeBar.appendChild(el("button", {class:"btn orange", type:"button", onclick: () => endSession(true)}, "✅ Terminer et enregistrer la session"));
+  closeBar.appendChild(el("button", {class:"btn outline", type:"button", onclick: () => printSession()}, "🖨️ Imprimer / PDF"));
+  closeBar.appendChild(el("button", {class:"btn outline", type:"button", onclick: () => {
+    confirmDialog("Voulez-vous vraiment abandonner cet appel ? Les saisies seront perdues.", () => {
+      STATE.currentCase = null;
+      STATE.currentSession = null;
+      navigateTo("accueil");
+    });
+  }}, "🚪 Abandonner l'appel"));
+  panel.appendChild(closeBar);
+
+  wrap.appendChild(panel);
+  root.appendChild(wrap);
+};
+
+/* Build the client info card (left aside in CRM) */
+function buildClientCard(client, cas){
+  const card = el("div", {class:"client-card"});
+  const head = el("div", {class:"client-card-head"});
+  head.innerHTML = `
+    <div class="ref">Réf. ${escapeHtml(client.ref)} · ${escapeHtml(cas.activite_type==="I"?"Activité I":cas.activite_type==="II"?"Activité II":cas.activite_type)}</div>
+    <h3>${escapeHtml(fullName(client))}</h3>
+    <div class="society">${escapeHtml(societe(client))}${client.fonction?" · "+escapeHtml(client.fonction):""}</div>
+  `;
+  card.appendChild(head);
+
+  const body = el("div", {class:"client-card-body"});
+  function rowIf(label, val, opts){
+    if(!val) return null;
+    return el("div", {class:"field-row"}, [
+      el("span", {class:"lbl"}, label),
+      el("span", {class:"val" + ((opts&&opts.mono)?" mono":"")}, String(val)),
+    ]);
+  }
+  [
+    rowIf("Adresse facturation", client.adresse_f),
+    rowIf("Code postal", client.cp_f, {mono:true}),
+    rowIf("Ville", client.ville_f),
+    rowIf("Tél fixe", client.fixe_1, {mono:true}),
+    rowIf("Mobile", client.portable_1, {mono:true}),
+    rowIf("E-mail", client.mail_1),
+    rowIf("Ancienneté", client.anciennete),
+    client.nom_2 ? rowIf("Contact 2", `${client.civilite||""} ${client.prenom_2||""} ${client.nom_2}`.trim()) : null,
+    client.fonction_2 ? rowIf("Fonction contact 2", client.fonction_2) : null,
+    client.adresse_l ? rowIf("Adresse livraison", client.adresse_l) : null,
+    client.cp_l ? rowIf("CP livraison", client.cp_l, {mono:true}) : null,
+    client.ville_l ? rowIf("Ville livraison", client.ville_l) : null,
+    client.fixe_2 ? rowIf("Tél fixe 2", client.fixe_2, {mono:true}) : null,
+    client.portable_2 ? rowIf("Mobile 2", client.portable_2, {mono:true}) : null,
+    client.mail_2 ? rowIf("E-mail 2", client.mail_2) : null,
+    rowIf("Compétence ciblée", client.competence),
+  ].filter(Boolean).forEach(r => body.appendChild(r));
+
+  card.appendChild(body);
+
+  // Action bar
+  const actBar = el("div", {class:"action-bar"});
+  actBar.innerHTML = `
+    <button class="btn sm" type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText('${escapeHtml(client.fixe_1||client.portable_1||"")}')">📋 Copier le tel</button>
+    <button class="btn sm outline" type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText('${escapeHtml(client.mail_1||"")}')">📧 Copier le mail</button>
+  `;
+  card.appendChild(actBar);
+
+  return card;
+}
+
+/* End the current session */
+function endSession(showDialog){
+  const s = STATE.currentSession;
+  if(!s) return;
+  s.finished = true;
+  s.ended_at = new Date().toISOString();
+  // duration in minutes
+  s.duration_min = Math.round((new Date(s.ended_at) - new Date(s.started_at))/60000);
+  // Save to STORE
+  STORE.sessions.push(structuredClone(s));
+  saveStore();
+  if(showDialog){
+    openModal({
+      title:"✅ Session enregistrée",
+      body: el("div", {}, [
+        el("p", {}, "Votre simulation a bien été enregistrée."),
+        el("p", {class:"text-muted text-small"}, `Durée : ${s.duration_min} min · ${s.historisation.length} historisations · ${Object.values(s.productions).filter(Boolean).filter(p=>p.body||p.subject).length} production(s) écrite(s)`),
+        el("p", {}, "Vous pouvez maintenant retourner à l'accueil pour choisir un autre cas, ou imprimer un récapitulatif PDF."),
+      ]),
+      foot: [
+        el("button", {class:"btn outline", type:"button", onclick: () => { closeModal(); printSession(); }}, "🖨️ Imprimer le récap"),
+        el("button", {class:"btn orange", type:"button", onclick: () => {
+          closeModal();
+          STATE.currentCase = null;
+          STATE.currentSession = null;
+          navigateTo("accueil");
+        }}, "Retour à l'accueil"),
+      ]
+    });
+  }
+}
+
+/* Print the current session as a recap */
+function printSession(){
+  if(!STATE.currentSession) return;
+  buildSessionPrintable(STATE.currentSession);
+  setTimeout(()=>window.print(), 200);
+}
+
+function buildSessionPrintable(s){
+  // Remove any existing print zone
+  $$(".print-zone").forEach(x=>x.remove());
+  const cas = STORE.cas.find(c => c.num_appel === s.case_ref);
+  const client = STORE.clients.find(c => c.ref === s.case_ref);
+  const zone = el("div", {class:"print-only print-zone"});
+  const page = el("div", {class:"print-page"});
+
+  page.innerHTML = `
+    <div class="print-header">
+      <div class="brand-mark"><strong style="color:#1a2e5c">TMK</strong> <span style="color:#f26749">Performances</span></div>
+      <div class="print-meta">
+        <strong>Récapitulatif de session</strong><br>
+        Stagiaire : ${escapeHtml(s.stagiaire)}<br>
+        Cas : ${escapeHtml(s.case_ref)} · ${escapeHtml(client ? fullName(client) : "")}<br>
+        Date : ${todayFr()} · Durée : ${s.duration_min||0} min
+      </div>
+    </div>
+    <div class="print-section">
+      <h3>Compétence travaillée</h3>
+      <div>${escapeHtml(s.competence||"—")}</div>
+    </div>
+    <div class="print-section">
+      <h3>Mission du conseiller</h3>
+      <div class="narrative">${nl2br(client && client.mission || "")}</div>
+    </div>
+    <div class="print-section">
+      <h3>Historisation de l'appel (${s.historisation.length})</h3>
+      ${s.historisation.length ?
+        '<ol>' + s.historisation.map(h => `<li><strong>${escapeHtml(h.date)} ${escapeHtml(h.time)}</strong> — ${escapeHtml(h.action)}${h.comment?'<br><em>'+escapeHtml(h.comment)+'</em>':''}</li>`).join('') + '</ol>'
+        : '<em>Aucune historisation saisie</em>'
+      }
+    </div>
+    ${s.wrap_up ? `<div class="print-section"><h3>Wrap-up</h3><div class="narrative">${nl2br(s.wrap_up)}</div></div>` : ''}
+    ${s.productions.mail && s.productions.mail.body ? `
+      <div class="print-section">
+        <h3>📧 E-mail</h3>
+        <div class="narrative">
+          <strong>De :</strong> ${escapeHtml(s.productions.mail.from||"")}<br>
+          <strong>À :</strong> ${escapeHtml(s.productions.mail.to||"")}<br>
+          <strong>Objet :</strong> ${escapeHtml(s.productions.mail.subject||"")}<br>
+          <hr style="margin:.5rem 0">${nl2br(s.productions.mail.body)}
+        </div>
+      </div>
+    ` : ''}
+    ${s.productions.sms && s.productions.sms.body ? `
+      <div class="print-section">
+        <h3>📱 SMS</h3>
+        <div class="narrative">À : ${escapeHtml(s.productions.sms.to||"")}<br><hr style="margin:.5rem 0">${nl2br(s.productions.sms.body)}</div>
+      </div>
+    ` : ''}
+    ${s.productions.courrier && s.productions.courrier.body ? `
+      <div class="print-section">
+        <h3>✉️ Courrier</h3>
+        <div class="narrative"><strong>Objet :</strong> ${escapeHtml(s.productions.courrier.subject||"")}<hr style="margin:.5rem 0">${nl2br(s.productions.courrier.body)}</div>
+      </div>
+    ` : ''}
+  `;
+  zone.appendChild(page);
+  document.body.appendChild(zone);
+}
+
+
+/* ============ PART 3 ============ */
+
+/* === CATALOGUE PRODUITS & SERVICES === */
+VIEWS.catalogue = function(root){
+  const isFormateur = STATE.user.role === "formateur";
+  // Group by category
+  const byCat = {};
+  STORE.catalogue.forEach(p => {
+    const k = p.categorie || "Autre";
+    (byCat[k] = byCat[k]||[]).push(p);
+  });
+
+  root.appendChild(el("h1", {class:"mb-2"}, "Catalogue On The Road"));
+  root.appendChild(el("p", {class:"text-muted mb-3"}, "Liste des produits et services proposés par On The Road. Tous les tarifs sont affichés en TTC."));
+
+  // Toolbar
+  const tb = el("div", {class:"admin-toolbar"});
+  const search = el("input", {type:"text", class:"search", placeholder:"🔍 Rechercher une référence, désignation, marque..."});
+  tb.appendChild(search);
+  if(isFormateur){
+    tb.appendChild(el("button", {class:"btn orange", type:"button", onclick: () => editProduit(null)}, "+ Nouveau produit"));
+  }
+  root.appendChild(tb);
+
+  const wrap = el("div", {class:"admin-table-wrap"});
+  const scroll = el("div", {class:"scroll"});
+  const table = el("table", {class:"table"});
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Réf.</th>
+        <th>Désignation</th>
+        <th>Description / véhicule</th>
+        <th>Catégorie</th>
+        <th style="text-align:right">Px HT</th>
+        <th style="text-align:right">Px TTC</th>
+        ${isFormateur?'<th></th>':''}
+      </tr>
+    </thead>
+    <tbody id="catBody"></tbody>
+  `;
+  scroll.appendChild(table);
+  wrap.appendChild(scroll);
+  root.appendChild(wrap);
+
+  function render(filter){
+    const tbody = $("#catBody");
+    tbody.innerHTML = "";
+    const f = (filter||"").toLowerCase();
+    let count = 0;
+    STORE.catalogue.forEach(p => {
+      const hay = (p.ref + " " + p.designation + " " + p.description + " " + p.categorie + " " + p.explications).toLowerCase();
+      if(f && !hay.includes(f)) return;
+      count++;
+      const tr = el("tr", {});
+      tr.innerHTML = `
+        <td><strong>${escapeHtml(p.ref)}</strong></td>
+        <td>${escapeHtml(p.designation)}</td>
+        <td><small class="text-muted">${escapeHtml(p.description||"")}</small></td>
+        <td><span class="badge-pill ${
+          p.categorie==="Pneumatique"?"pill-navy":
+          p.categorie==="service"?"pill-green":
+          p.categorie==="offre partenaires"?"pill-yellow":
+          "pill-orange"
+        }">${escapeHtml(p.categorie||"—")}</span></td>
+        <td style="text-align:right;font-variant-numeric:tabular-nums">${p.ht!=null?fmtMoney(p.ht):"—"}</td>
+        <td style="text-align:right;font-variant-numeric:tabular-nums"><strong>${p.ttc!=null?fmtMoney(p.ttc):"—"}</strong></td>
+        ${isFormateur?'<td><div class="row-actions"><button class="icon-btn" type="button" data-edit="'+escapeHtml(p.ref)+'">✏️</button><button class="icon-btn danger" type="button" data-del="'+escapeHtml(p.ref)+'">🗑️</button></div></td>':''}
+      `;
+      tbody.appendChild(tr);
+    });
+    if(count === 0){
+      tbody.appendChild(el("tr", {}, el("td", {colspan: isFormateur?"7":"6", class:"empty"}, "Aucun résultat")));
+    }
+    if(isFormateur){
+      $$("[data-edit]").forEach(b => b.addEventListener("click", () => editProduit(b.dataset.edit)));
+      $$("[data-del]").forEach(b => b.addEventListener("click", () => {
+        const ref = b.dataset.del;
+        confirmDialog(`Supprimer le produit ${ref} ?`, () => {
+          STORE.catalogue = STORE.catalogue.filter(p => p.ref !== ref);
+          saveStore();
+          render(search.value);
+          toast("Produit supprimé", "success");
+        });
+      }));
+    }
+  }
+  search.addEventListener("input", () => render(search.value));
+  render("");
+};
+
+function editProduit(ref){
+  const isNew = !ref;
+  const p = isNew ? { ref:"", designation:"", description:"", ht:null, ttc:null, categorie:"Pneumatique", explications:"" }
+                  : structuredClone(STORE.catalogue.find(x => x.ref === ref));
+  if(!p){ toast("Produit introuvable", "error"); return; }
+
+  const form = el("div", {});
+  form.innerHTML = `
+    <div class="grid-2">
+      <div class="form-field"><label>Référence *</label><input id="pRef" value="${escapeHtml(p.ref)}" ${isNew?'':'readonly'}></div>
+      <div class="form-field"><label>Catégorie</label>
+        <select id="pCat">
+          <option ${p.categorie==="Pneumatique"?"selected":""}>Pneumatique</option>
+          <option ${p.categorie==="service"?"selected":""}>service</option>
+          <option ${p.categorie==="offre partenaires"?"selected":""}>offre partenaires</option>
+          <option ${p.categorie==="Service +"?"selected":""}>Service +</option>
+          <option ${p.categorie==="Autre"?"selected":""}>Autre</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field"><label>Désignation *</label><input id="pDes" value="${escapeHtml(p.designation)}"></div>
+    <div class="form-field"><label>Description / conditionnement</label><textarea id="pDsc">${escapeHtml(p.description||"")}</textarea></div>
+    <div class="grid-2">
+      <div class="form-field"><label>Prix HT (€)</label><input type="number" step="0.01" id="pHt" value="${p.ht!=null?p.ht:''}"></div>
+      <div class="form-field"><label>Prix TTC (€)</label><input type="number" step="0.01" id="pTtc" value="${p.ttc!=null?p.ttc:''}"></div>
+    </div>
+    <div class="form-field"><label>Explications complémentaires (utile pour les stagiaires)</label><textarea id="pExp">${escapeHtml(p.explications||"")}</textarea></div>
+  `;
+  openModal({
+    title: isNew?"Nouveau produit":"Modifier le produit "+p.ref,
+    body: form,
+    size:"large",
+    foot: [
+      el("button", {class:"btn outline", type:"button", onclick: closeModal}, "Annuler"),
+      el("button", {class:"btn", type:"button", onclick: () => {
+        const newRef = $("#pRef").value.trim();
+        const des = $("#pDes").value.trim();
+        if(!newRef || !des){ toast("Référence et désignation obligatoires", "error"); return; }
+        if(isNew && STORE.catalogue.find(x => x.ref === newRef)){
+          toast("Cette référence existe déjà", "error"); return;
+        }
+        const updated = {
+          ref: newRef,
+          designation: des,
+          description: $("#pDsc").value.trim(),
+          ht: $("#pHt").value === "" ? null : parseFloat($("#pHt").value),
+          ttc: $("#pTtc").value === "" ? null : parseFloat($("#pTtc").value),
+          categorie: $("#pCat").value,
+          explications: $("#pExp").value.trim(),
+        };
+        if(isNew) STORE.catalogue.push(updated);
+        else {
+          const idx = STORE.catalogue.findIndex(x => x.ref === ref);
+          STORE.catalogue[idx] = updated;
+        }
+        saveStore();
+        closeModal();
+        toast(isNew?"Produit ajouté":"Produit modifié", "success");
+        navigateTo("catalogue");
+      }}, "Enregistrer"),
+    ]
+  });
+}
+
+/* === INFOS GENERALES === */
+VIEWS.infos = function(root){
+  root.appendChild(el("h1", {class:"mb-2"}, "Informations générales — On The Road"));
+  root.appendChild(el("p", {class:"text-muted mb-3"}, "Toutes les informations à connaître pour bien conseiller le client."));
+
+  const grid = el("div", {class:"grid-2"});
+
+  // Charte d'accueil + réseau
+  const c1 = el("div", {class:"card"});
+  c1.innerHTML = `
+    <div class="card-header"><h2>🎙️ La charte d'accueil</h2></div>
+    <p><strong>En réception d'appels :</strong></p>
+    <div class="well">« Bienvenue chez ON THE ROAD, <em>(votre prénom)</em> à votre écoute… Bonjour M. ou Mme »</div>
+    <p class="mt-2"><strong>En émission d'appels :</strong></p>
+    <div class="well">« Bonjour, <em>(votre prénom)</em> d'ON THE ROAD. Vous êtes bien M. ou Mme X… »</div>
+  `;
+  grid.appendChild(c1);
+
+  const c2 = el("div", {class:"card"});
+  c2.innerHTML = `
+    <div class="card-header"><h2>🛒 Le réseau de distribution</h2></div>
+    <p>La société ON THE ROAD ne possède pas de magasin physique : elle vend ses produits et services en ligne via son site e-commerce <a href="#" onclick="return false">www.ontheroad.com</a>.</p>
+    <p>Les livraisons se font soit au domicile du client, soit chez l'un des <strong>28 centres partenaires</strong> sur le territoire national qui assurent aussi les prestations d'ON THE ROAD.</p>
+    <p>Tous les tarifs du catalogue sont affichés <strong>en TTC</strong>. Pour les professionnels, la TVA est récupérable.</p>
+    <p>ON THE ROAD propose également des « <strong>services +</strong> » : démarches d'immatriculation de véhicules, dépôt de plainte en ligne en cas de vol…</p>
+  `;
+  grid.appendChild(c2);
+
+  const c3 = el("div", {class:"card"});
+  c3.innerHTML = `
+    <div class="card-header"><h2>💼 Offre CSE</h2></div>
+    <ul>
+      <li>Une remise de <strong>10 %</strong> est offerte aux porteurs de la carte du CSE.</li>
+      <li>Pour une commande globale ≥ <strong>6 000 € TTC</strong>, une réduction de <strong>15 %</strong> est accordée et un paiement en <strong>4 fois sans frais</strong>.</li>
+    </ul>
+  `;
+  grid.appendChild(c3);
+
+  const c4 = el("div", {class:"card"});
+  c4.innerHTML = `
+    <div class="card-header"><h2>🛡️ Services + (FAQ)</h2></div>
+    <h4 class="mt-1">Porter plainte en ligne</h4>
+    <p class="text-small">La pré-plainte en ligne permet d'effectuer une pré-déclaration pour une atteinte aux biens (vol, escroquerie) ou certains faits à caractère discriminatoire par auteur inconnu. Après la pré-déclaration, le client doit prendre rendez-vous au commissariat ou à la brigade pour signer la plainte.</p>
+    <h4 class="mt-2">Immatriculation d'un véhicule</h4>
+    <p class="text-small">La demande de carte grise s'effectue sur le site <strong>ANTS</strong> (Agence Nationale des Titres Sécurisés). Documents nécessaires : Cerfa 13750*07, pièce d'identité, certificat de conformité, justificatif de domicile, quitus fiscal si véhicule acquis à l'étranger.</p>
+  `;
+  grid.appendChild(c4);
+
+  root.appendChild(grid);
+
+  // Historique des CGV (collapse)
+  root.appendChild(el("h2", {class:"mt-3 mb-2"}, "📜 Conditions Générales de Vente"));
+  const cgvCard = el("div", {class:"card"});
+  cgvCard.innerHTML = `
+    <details>
+      <summary style="cursor:pointer;font-weight:600;color:var(--tmk-navy)">Voir l'extrait des CGV On The Road</summary>
+      <div class="text-small mt-2" style="white-space:pre-wrap">${escapeHtml((STORE.cgv||[]).join("\n\n"))}</div>
+    </details>
+  `;
+  root.appendChild(cgvCard);
+};
+
+/* === CENTRES AGREES === */
+VIEWS.centres = function(root){
+  const isFormateur = STATE.user.role === "formateur";
+  root.appendChild(el("h1", {class:"mb-2"}, "Centres agréés On The Road"));
+  root.appendChild(el("p", {class:"text-muted mb-3"}, `${STORE.centres.length} centres partenaires sur le territoire national qui assurent les livraisons et les prestations.`));
+
+  // Group by region
+  const regions = {};
+  STORE.centres.forEach(c => {
+    (regions[c.region] = regions[c.region]||[]).push(c);
+  });
+
+  const tb = el("div", {class:"admin-toolbar"});
+  const search = el("input", {type:"text", class:"search", placeholder:"🔍 Rechercher (département, ville, nom)…"});
+  tb.appendChild(search);
+  root.appendChild(tb);
+
+  const list = el("div", {});
+  function render(filter){
+    list.innerHTML = "";
+    const f = (filter||"").toLowerCase();
+    Object.keys(regions).sort().forEach(reg => {
+      const matching = regions[reg].filter(c => {
+        const hay = (c.departement+" "+c.nom+" "+c.ville+" "+c.adresse+" "+c.cp).toLowerCase();
+        return !f || hay.includes(f);
+      });
+      if(matching.length === 0) return;
+      const sec = el("div", {class:"card mb-2"});
+      sec.appendChild(el("div", {class:"card-header"}, [
+        el("h2", {}, "📍 " + reg),
+        el("span", {class:"badge-pill pill-grey"}, matching.length + " centre" + (matching.length>1?"s":"")),
+      ]));
+      const t = el("table", {class:"table"});
+      t.innerHTML = `<thead><tr><th>Dép.</th><th>Centre</th><th>Adresse</th><th>Ville</th><th>Téléphone</th></tr></thead>`;
+      const tb = el("tbody");
+      matching.forEach(c => {
+        const tr = el("tr", {});
+        tr.innerHTML = `<td><strong>${escapeHtml(c.departement)}</strong></td><td>${escapeHtml(c.nom)}</td><td>${escapeHtml(c.adresse)}</td><td>${escapeHtml(c.cp)} ${escapeHtml(c.ville)}</td><td>${escapeHtml(c.telephone)}</td>`;
+        tb.appendChild(tr);
+      });
+      t.appendChild(tb);
+      sec.appendChild(t);
+      list.appendChild(sec);
+    });
+  }
+  search.addEventListener("input", () => render(search.value));
+  render("");
+  root.appendChild(list);
+};
+
+/* === MANUEL D'UTILISATION === */
+VIEWS.manuel = function(root){
+  const wrap = el("div", {class:"manual"});
+  wrap.innerHTML = `
+    <h1 class="mb-2">📖 Manuel d'utilisation</h1>
+    <p class="text-muted mb-3">Guide d'utilisation de la plateforme de simulation On The Road — TMK Performances.</p>
+
+    <div class="manual-toc">
+      <strong>Sommaire</strong>
+      <ul>
+        <li><a href="#m-intro">1. Présentation de la plateforme</a></li>
+        <li><a href="#m-stagiaire">2. Mode Stagiaire — Jouer une simulation</a></li>
+        <li><a href="#m-formateur">3. Mode Formateur — Gérer la base</a></li>
+        <li><a href="#m-pdf">4. Imprimer / exporter en PDF</a></li>
+        <li><a href="#m-data">5. Sauvegarde et déploiement (Vercel / GitHub)</a></li>
+        <li><a href="#m-faq">6. FAQ et raccourcis</a></li>
+      </ul>
+    </div>
+
+    <section id="m-intro">
+      <h2>1. Présentation de la plateforme</h2>
+      <p>Cette plateforme remplace l'outil Excel "Interface candidat — Version TMK — On The Road". Elle est conçue pour permettre à vos stagiaires en formation Relation Client à Distance de :</p>
+      <ul>
+        <li>Jouer un appel entrant ou sortant en se mettant dans la peau d'un conseiller du service client de "On The Road" ;</li>
+        <li>Consulter une fiche client riche (CRM) avec adresse, contacts, historique, compétence travaillée ;</li>
+        <li>Historiser leurs actions pendant l'appel ;</li>
+        <li>Rédiger une production écrite (mail, SMS ou courrier) ;</li>
+        <li>Exporter un récapitulatif PDF à envoyer au formateur (TEAMS, mail…).</li>
+      </ul>
+      <p>Le mode <strong>formateur</strong> permet d'ajouter / modifier / supprimer des cas, des fiches clients et des produits du catalogue, ainsi que de consulter les sessions enregistrées par les stagiaires.</p>
+      <div class="keybox">
+        💡 <strong>Astuce</strong> — Toutes les données sont stockées dans le navigateur (localStorage). Pour partager une base entre formateurs ou faire une sauvegarde, utilisez l'export JSON dans <em>Paramètres</em>.
+      </div>
+    </section>
+
+    <section id="m-stagiaire">
+      <h2>2. Mode Stagiaire — Jouer une simulation</h2>
+
+      <h3>2.1. Connexion</h3>
+      <ol>
+        <li>Sur l'écran de connexion, sélectionnez <strong>« Stagiaire »</strong>.</li>
+        <li>Saisissez votre prénom et votre nom.</li>
+        <li>Cliquez sur <strong>« Accéder à la plateforme »</strong>.</li>
+      </ol>
+
+      <h3>2.2. Choisir un cas</h3>
+      <p>Sur l'accueil, vous pouvez :</p>
+      <ul>
+        <li>Cliquer sur <strong>« 🎲 Tirage aléatoire d'un cas »</strong> pour lancer un cas au hasard ;</li>
+        <li>Choisir un cas précis dans la grille ;</li>
+        <li>Le formateur peut aussi vous indiquer un numéro précis (ex : 1-04, 2-06).</li>
+      </ul>
+      <p>Un cas est composé de 3 éléments :</p>
+      <ul>
+        <li>Une <strong>fiche client</strong> (raison sociale, adresse, historique d'achats…) ;</li>
+        <li>Une <strong>mission</strong> (le rôle attendu du conseiller) ;</li>
+        <li>Un <strong>brief candidat-client</strong> joué par un autre stagiaire (consultable côté formateur, exportable en PDF).</li>
+      </ul>
+
+      <h3>2.3. Pendant l'appel</h3>
+      <ol>
+        <li><strong>Consultez la fiche client</strong> à gauche de l'écran : civilité, raison sociale, contact, historique des événements.</li>
+        <li><strong>Lisez la mission</strong> dans l'encadré orange en haut : c'est ce que vous devez faire.</li>
+        <li><strong>Historisez chaque action</strong> dans l'onglet "Historisation". Chaque ligne = une action effectuée + un commentaire optionnel.</li>
+        <li>À la fin, rédigez la <strong>production écrite</strong> (mail, SMS ou courrier) selon ce qui est demandé.</li>
+        <li>Renseignez le <strong>wrap-up</strong> (synthèse de fin d'appel).</li>
+        <li>Cliquez sur <strong>« ✅ Terminer et enregistrer la session »</strong>.</li>
+      </ol>
+      <div class="keybox">
+        🖨️ <strong>Imprimer / PDF</strong> — Le bouton <em>« 🖨️ Imprimer / PDF »</em> génère un récapitulatif complet à imprimer ou enregistrer en PDF (Ctrl+P → "Enregistrer en PDF"), à envoyer au formateur via TEAMS ou par mail.
+      </div>
+    </section>
+
+    <section id="m-formateur">
+      <h2>3. Mode Formateur — Gérer la base</h2>
+
+      <h3>3.1. Connexion formateur</h3>
+      <ol>
+        <li>Sur l'écran de connexion, sélectionnez <strong>« Formateur »</strong>.</li>
+        <li>Saisissez votre nom.</li>
+        <li>Saisissez le <strong>code formateur</strong> (par défaut : <code>tmk2026</code>, modifiable dans Paramètres).</li>
+      </ol>
+
+      <h3>3.2. Tableau de bord</h3>
+      <p>Vue synthétique : nombre de cas, nombre de fiches clients, sessions jouées, compétences travaillées par les stagiaires.</p>
+
+      <h3>3.3. Créer / modifier un cas client</h3>
+      <ol>
+        <li>Allez dans <strong>« Cas clients »</strong>.</li>
+        <li>Cliquez sur <strong>« + Nouveau cas »</strong> (ou ✏️ pour modifier un cas existant).</li>
+        <li>Renseignez :
+          <ul>
+            <li><strong>Numéro d'appel</strong> (ex : 5-01) ;</li>
+            <li><strong>Activité</strong> (I = renseignement / II = vente, fidélisation, recouvrement) ;</li>
+            <li><strong>Compétence + canal</strong> (ex : "Réaliser des actions de prospection - B to B - SMS") ;</li>
+            <li><strong>Rôle joué par le candidat-client</strong> (ce qu'il fait, le contexte) ;</li>
+            <li><strong>Profil</strong> (informations cachées pour le conseiller, à utiliser par le candidat-client) ;</li>
+            <li><strong>Objet</strong> (produits, références, etc.) ;</li>
+            <li>Une fiche client liée doit exister avec le même numéro d'appel.</li>
+          </ul>
+        </li>
+        <li>Pour exporter le brief en PDF, cliquez sur <strong>« 📄 Exporter en PDF »</strong>. Deux versions sont générées :
+          <ul>
+            <li>La <strong>fiche stagiaire-conseiller</strong> (mission, fiche client) ;</li>
+            <li>Le <strong>brief candidat-client</strong> (rôle à jouer, profil).</li>
+          </ul>
+        </li>
+      </ol>
+
+      <h3>3.4. Gérer les fiches clients (BDD)</h3>
+      <p>L'onglet <strong>« Fiches clients (BDD) »</strong> permet d'ajouter, modifier ou supprimer une fiche : civilité, nom, prénom, raison sociale, adresses (facturation et livraison), téléphones, mails, mission, événements historiques, montants…</p>
+
+      <h3>3.5. Gérer le catalogue</h3>
+      <p>L'onglet <strong>« Catalogue produits »</strong> permet de modifier la liste des pneus, services et offres partenaires (référence, désignation, description, prix HT/TTC, catégorie).</p>
+
+      <h3>3.6. Consulter les sessions stagiaires</h3>
+      <p>L'onglet <strong>« Sessions stagiaires »</strong> permet de voir tous les appels joués (durée, historisation, productions écrites). Vous pouvez filtrer par stagiaire ou par compétence et exporter une session en PDF.</p>
+    </section>
+
+    <section id="m-pdf">
+      <h2>4. Imprimer / Exporter en PDF</h2>
+      <p>Pour générer un PDF, utilisez le bouton <strong>« 🖨️ Imprimer / PDF »</strong> ou bien <strong>Ctrl+P</strong> (Cmd+P sur Mac) puis sélectionnez "Enregistrer en PDF" dans la boîte de dialogue d'impression.</p>
+      <p>Trois types de PDF peuvent être générés :</p>
+      <ul>
+        <li><strong>Brief stagiaire-conseiller</strong> : fiche client + mission ;</li>
+        <li><strong>Brief candidat-client</strong> : rôle + profil + contexte (à imprimer pour le candidat qui jouera le client) ;</li>
+        <li><strong>Récapitulatif de session</strong> : historisation + productions écrites du stagiaire.</li>
+      </ul>
+    </section>
+
+    <section id="m-data">
+      <h2>5. Sauvegarde et déploiement</h2>
+      <h3>5.1. Sauvegarde locale</h3>
+      <p>Toutes les données sont stockées dans le navigateur via <code>localStorage</code>. Cela signifie que :</p>
+      <ul>
+        <li>Les données sont propres à chaque navigateur / poste.</li>
+        <li>Si vous videz le cache, vous perdez les modifications.</li>
+        <li>Pour partager des cas entre formateurs ou postes, utilisez l'<strong>export / import JSON</strong> dans <em>Paramètres</em>.</li>
+      </ul>
+
+      <h3>5.2. Déploiement GitHub + Vercel</h3>
+      <ol>
+        <li>Créez un repository GitHub (ex : <code>tmk-otr-simulation</code>).</li>
+        <li>Placez-y le fichier <code>index.html</code> à la racine.</li>
+        <li>Connectez le repo à <a href="https://vercel.com" target="_blank">Vercel.com</a>.</li>
+        <li>Vercel détecte automatiquement le fichier statique et le déploie. Aucun build n'est nécessaire — le fichier HTML est totalement autonome (CSS et JS embarqués, données comprises).</li>
+        <li>Pour les futures mises à jour : pushez sur GitHub, Vercel redéploie automatiquement.</li>
+      </ol>
+      <div class="keybox">
+        🔐 <strong>Sécurité du code formateur</strong> — Le mot de passe formateur est stocké côté navigateur, il ne protège pas l'accès aux données depuis la console. Cette plateforme est conçue comme un outil pédagogique en accès libre, pas comme un système sécurisé. Pour des données réellement confidentielles, utilisez un autre canal.
+      </div>
+    </section>
+
+    <section id="m-faq">
+      <h2>6. FAQ et raccourcis</h2>
+      <h3>Comment réinitialiser la base aux données d'origine ?</h3>
+      <p>Allez dans <em>Paramètres → Réinitialiser la base</em>. Toutes vos modifications seront perdues.</p>
+
+      <h3>Comment changer le mot de passe formateur ?</h3>
+      <p>Allez dans <em>Paramètres → Code formateur</em> et saisissez un nouveau code.</p>
+
+      <h3>Mon stagiaire ne voit pas ses sessions précédentes</h3>
+      <p>Les sessions sont stockées dans le navigateur du poste. Si le stagiaire change de poste, ses sessions ne suivent pas. C'est normal pour cet outil pédagogique.</p>
+
+      <h3>Comment ajouter un nouveau sujet (Bornéo, autre…) ?</h3>
+      <p>La V1 actuelle gère uniquement le sujet "On The Road". L'ajout d'un nouveau sujet est prévu dans une V2 — la structure de l'application a été conçue pour le permettre (catalogue, BDD et cas séparés par sujet).</p>
+    </section>
+  `;
+  root.appendChild(wrap);
+};
+
+
+/* ============ PART 4 ============ */
+
+/* === FORMATEUR : TABLEAU DE BORD === */
+VIEWS.tableau = function(root){
+  root.appendChild(el("h1", {class:"mb-2"}, "Tableau de bord formateur"));
+  root.appendChild(el("p", {class:"text-muted mb-3"}, "Vue d'ensemble de la plateforme et de l'activité des stagiaires."));
+
+  const totalSessions = STORE.sessions.length;
+  const stagiaires = new Set(STORE.sessions.map(s => s.stagiaire));
+  const competences = new Set(STORE.sessions.map(s => s.competence).filter(Boolean));
+  const last7 = STORE.sessions.filter(s => {
+    if(!s.started_at) return false;
+    return (Date.now() - new Date(s.started_at).getTime()) < 7*24*3600*1000;
+  });
+
+  const kpis = el("div", {class:"grid-4 mb-3"});
+  kpis.innerHTML = `
+    <div class="kpi"><span class="kpi-label">Cas clients</span><span class="kpi-value">${STORE.cas.length}</span><span class="kpi-sub">briefs disponibles</span></div>
+    <div class="kpi orange"><span class="kpi-label">Fiches clients</span><span class="kpi-value">${STORE.clients.length}</span><span class="kpi-sub">en BDD</span></div>
+    <div class="kpi green"><span class="kpi-label">Sessions enregistrées</span><span class="kpi-value">${totalSessions}</span><span class="kpi-sub">${last7.length} sur 7 jours</span></div>
+    <div class="kpi yellow"><span class="kpi-label">Stagiaires actifs</span><span class="kpi-value">${stagiaires.size}</span><span class="kpi-sub">${competences.size} compétences travaillées</span></div>
+  `;
+  root.appendChild(kpis);
+
+  // Quick actions
+  root.appendChild(el("h2", {class:"mb-2"}, "🚀 Actions rapides"));
+  const actions = el("div", {class:"grid-3"});
+  const actionBtns = [
+    { label:"📋 Voir / éditer les cas clients", to:"cas" },
+    { label:"👥 Gérer les fiches clients", to:"clients" },
+    { label:"🛞 Modifier le catalogue", to:"catalogue" },
+    { label:"📞 Sessions stagiaires", to:"sessions" },
+    { label:"📍 Centres agréés", to:"centres" },
+    { label:"⚙️ Paramètres / Sauvegarde", to:"params" },
+  ];
+  actionBtns.forEach(a => {
+    const b = el("button", {class:"activity-tile", type:"button", onclick: () => navigateTo(a.to)});
+    b.innerHTML = `<h4>${escapeHtml(a.label)}</h4><small class="text-muted">Cliquez pour ouvrir</small>`;
+    actions.appendChild(b);
+  });
+  root.appendChild(actions);
+
+  // Compétences travaillées
+  if(totalSessions){
+    root.appendChild(el("h2", {class:"mt-3 mb-2"}, "📊 Compétences travaillées par les stagiaires"));
+    const byComp = {};
+    STORE.sessions.forEach(s => {
+      const k = s.competence || "Non défini";
+      byComp[k] = (byComp[k]||0) + 1;
+    });
+    const card = el("div", {class:"card"});
+    const list = el("div", {});
+    Object.entries(byComp).sort((a,b)=>b[1]-a[1]).forEach(([k,v]) => {
+      const max = Math.max(...Object.values(byComp));
+      const pct = (v/max)*100;
+      list.appendChild(el("div", {class:"mb-2"}, [
+        el("div", {class:"flex between center mb-1"}, [
+          el("strong", {}, k),
+          el("span", {class:"badge-pill pill-navy"}, `${v} session${v>1?"s":""}`),
+        ]),
+        el("div", {style:"height:8px;background:var(--bg-muted);border-radius:4px;overflow:hidden"}, 
+          el("div", {style:`height:100%;width:${pct}%;background:linear-gradient(90deg, var(--tmk-navy) 0%, var(--tmk-orange) 100%);border-radius:4px`})
+        ),
+      ]));
+    });
+    card.appendChild(list);
+    root.appendChild(card);
+  }
+};
+
+/* === FORMATEUR : LISTE DES CAS === */
+VIEWS.cas = function(root){
+  root.appendChild(el("h1", {class:"mb-2"}, "Cas clients"));
+  root.appendChild(el("p", {class:"text-muted mb-3"}, "Liste des briefs candidats. Chaque cas est associé à une fiche client (BDD)."));
+
+  const tb = el("div", {class:"admin-toolbar"});
+  const search = el("input", {type:"text", class:"search", placeholder:"🔍 Rechercher (n° d'appel, compétence, rôle…)"});
+  tb.appendChild(search);
+  const filterAct = el("select", {class:"search", style:"max-width:180px"});
+  filterAct.innerHTML = `<option value="">Toutes activités</option><option>I</option><option>II</option><option>III</option>`;
+  tb.appendChild(filterAct);
+  tb.appendChild(el("button", {class:"btn orange", type:"button", onclick: () => editCas(null)}, "+ Nouveau cas"));
+  root.appendChild(tb);
+
+  const wrap = el("div", {class:"admin-table-wrap"});
+  const scroll = el("div", {class:"scroll"});
+  const table = el("table", {class:"table"});
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>N°</th><th>Activité</th><th>Compétence / Canal</th><th>Client</th><th>Rôle joué</th><th></th>
+      </tr>
+    </thead>
+    <tbody id="casBody"></tbody>
+  `;
+  scroll.appendChild(table);
+  wrap.appendChild(scroll);
+  root.appendChild(wrap);
+
+  function render(){
+    const f = (search.value||"").toLowerCase();
+    const a = filterAct.value;
+    const tbody = $("#casBody");
+    tbody.innerHTML = "";
+    let count = 0;
+    STORE.cas.forEach(c => {
+      const client = STORE.clients.find(cl => cl.ref === c.num_appel);
+      const hay = (c.num_appel + " " + c.competence_canal + " " + c.role + " " + (client?fullName(client):"")).toLowerCase();
+      if(f && !hay.includes(f)) return;
+      if(a && c.activite_type !== a) return;
+      count++;
+      const tr = el("tr", {});
+      tr.innerHTML = `
+        <td><strong>${escapeHtml(c.num_appel)}</strong></td>
+        <td><span class="badge-pill ${c.activite_type==="I"?"pill-navy":"pill-orange"}">${escapeHtml(c.activite_type)}</span></td>
+        <td><small>${escapeHtml((c.competence_canal||"").split("\n").slice(0,2).join(" / ").substring(0,80))}…</small></td>
+        <td>${client ? escapeHtml(fullName(client)) + " <small class='text-muted'>("+escapeHtml(societe(client))+")</small>" : "<em class='text-muted'>aucune fiche</em>"}</td>
+        <td><small>${escapeHtml((c.role||"").substring(0,80))}…</small></td>
+        <td>
+          <div class="row-actions">
+            <button class="icon-btn" type="button" data-edit="${escapeHtml(c.num_appel)}" title="Modifier">✏️</button>
+            <button class="icon-btn" type="button" data-pdf="${escapeHtml(c.num_appel)}" title="Exporter PDF">📄</button>
+            <button class="icon-btn danger" type="button" data-del="${escapeHtml(c.num_appel)}" title="Supprimer">🗑️</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+    if(count===0) tbody.appendChild(el("tr", {}, el("td", {colspan:"6", class:"empty"}, "Aucun cas correspondant")));
+    $$("[data-edit]").forEach(b => b.addEventListener("click", () => editCas(b.dataset.edit)));
+    $$("[data-pdf]").forEach(b => b.addEventListener("click", () => exportCasPdf(b.dataset.pdf)));
+    $$("[data-del]").forEach(b => b.addEventListener("click", () => {
+      confirmDialog(`Supprimer le cas ${b.dataset.del} ?`, () => {
+        STORE.cas = STORE.cas.filter(x => x.num_appel !== b.dataset.del);
+        saveStore();
+        render();
+        toast("Cas supprimé", "success");
+      });
+    }));
+  }
+  search.addEventListener("input", render);
+  filterAct.addEventListener("change", render);
+  render();
+};
+
+function editCas(num){
+  const isNew = !num;
+  const c = isNew ? { num_appel:"", activite_type:"I", competence_canal:"", role:"", objet:"", profil:"" }
+                  : structuredClone(STORE.cas.find(x => x.num_appel === num));
+  if(!c){ toast("Cas introuvable", "error"); return; }
+  const linkedClient = STORE.clients.find(cl => cl.ref === c.num_appel);
+
+  const form = el("div", {});
+  form.innerHTML = `
+    <div class="grid-2">
+      <div class="form-field"><label>N° d'appel *</label><input id="cNum" value="${escapeHtml(c.num_appel)}" ${isNew?'':'readonly'} placeholder="ex : 5-01"></div>
+      <div class="form-field"><label>Activité</label>
+        <select id="cAct">
+          <option value="I" ${c.activite_type==="I"?"selected":""}>I — Renseignement / accueil</option>
+          <option value="II" ${c.activite_type==="II"?"selected":""}>II — Vente / fidélisation / recouvrement</option>
+          <option value="III" ${c.activite_type==="III"?"selected":""}>III — Autre</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field"><label>Compétence + canal (1 par ligne)</label><textarea id="cCompCan" rows="4" placeholder="- Réaliser des actions de prospection...&#10;- B to B&#10;- SMS / mail / chat...">${escapeHtml(c.competence_canal||"")}</textarea></div>
+    <div class="form-field"><label>Rôle joué par le candidat-client *</label><textarea id="cRole" rows="3" placeholder="Ex : M. DUPONT. Vous contactez le service client de On the Road pour…">${escapeHtml(c.role||"")}</textarea></div>
+    <div class="form-field"><label>Objet (produits, références, montants demandés)</label><textarea id="cObj" rows="2" placeholder="Ex : - PNEU 255/55R18 (4 unités) - PNEU 215/55R18 (2 unités)">${escapeHtml(c.objet||"")}</textarea></div>
+    <div class="form-field"><label>Profil candidat (informations cachées du conseiller)</label><textarea id="cProfil" rows="4" placeholder="Ex : Vous êtes attentif aux promotions. Vous avez un budget de 600€ TTC…">${escapeHtml(c.profil||"")}</textarea></div>
+    ${linkedClient ? `<div class="well mt-2"><strong>Fiche client liée :</strong> ${escapeHtml(fullName(linkedClient))} (réf. ${escapeHtml(linkedClient.ref)})</div>` 
+      : `<div class="well mt-2" style="border-left:3px solid var(--tmk-orange)"><strong>⚠️ Aucune fiche client n'a la même référence</strong>. Pensez à créer la fiche dans l'onglet "Fiches clients" pour que ce cas soit jouable.</div>`}
+  `;
+  openModal({
+    title: isNew?"Nouveau cas client":"Modifier le cas "+c.num_appel,
+    body: form,
+    size:"large",
+    foot: [
+      el("button", {class:"btn outline", type:"button", onclick: closeModal}, "Annuler"),
+      el("button", {class:"btn", type:"button", onclick: () => {
+        const newNum = $("#cNum").value.trim();
+        const role = $("#cRole").value.trim();
+        if(!newNum || !role){ toast("N° et rôle obligatoires", "error"); return; }
+        if(isNew && STORE.cas.find(x => x.num_appel === newNum)){
+          toast("Ce numéro existe déjà", "error"); return;
+        }
+        const updated = {
+          num_appel: newNum,
+          activite_type: $("#cAct").value,
+          competence_canal: $("#cCompCan").value.trim(),
+          role: role,
+          objet: $("#cObj").value.trim(),
+          profil: $("#cProfil").value.trim(),
+        };
+        if(isNew) STORE.cas.push(updated);
+        else {
+          const idx = STORE.cas.findIndex(x => x.num_appel === num);
+          STORE.cas[idx] = updated;
+        }
+        saveStore();
+        closeModal();
+        toast(isNew?"Cas créé":"Cas modifié", "success");
+        navigateTo("cas");
+      }}, "Enregistrer"),
+    ]
+  });
+}
+
+/* Export a case to PDF (printable) */
+function exportCasPdf(num){
+  const cas = STORE.cas.find(c => c.num_appel === num);
+  const client = STORE.clients.find(c => c.ref === num);
+  if(!cas){ toast("Cas introuvable", "error"); return; }
+  // Remove any existing print zone
+  $$(".print-zone").forEach(x=>x.remove());
+  const zone = el("div", {class:"print-only print-zone"});
+
+  // Page 1 : fiche stagiaire-conseiller
+  const p1 = el("div", {class:"print-page"});
+  p1.innerHTML = `
+    <div class="print-header">
+      <div class="brand-mark"><strong style="color:#1a2e5c">TMK</strong> <span style="color:#f26749">Performances</span></div>
+      <div class="print-meta">
+        <strong>Brief stagiaire — Conseiller</strong><br>
+        Cas n° ${escapeHtml(cas.num_appel)} · ${escapeHtml(cas.activite_type==="I"?"Activité I":cas.activite_type==="II"?"Activité II":cas.activite_type)}<br>
+        Sujet : On The Road
+      </div>
+    </div>
+    <div class="print-section">
+      <h3>🎯 Votre mission</h3>
+      <div class="narrative">${nl2br(client && client.mission || "Mission non renseignée")}</div>
+    </div>
+    <div class="print-section">
+      <h3>👤 Fiche client</h3>
+      <div class="info-grid">
+        <div><span>Réf.</span> ${escapeHtml(client?client.ref:"")}</div>
+        <div><span>Raison sociale</span> ${escapeHtml(client?societe(client):"")}</div>
+        <div><span>Civilité, nom prénom</span> ${escapeHtml(client?fullName(client):"")}</div>
+        <div><span>Fonction</span> ${escapeHtml(client?client.fonction:"")||"—"}</div>
+        <div><span>Adresse fact.</span> ${escapeHtml(client?client.adresse_f:"")}</div>
+        <div><span>CP / Ville</span> ${escapeHtml(client?client.cp_f+" "+client.ville_f:"")}</div>
+        <div><span>Téléphone fixe</span> ${escapeHtml(client?client.fixe_1:"")||"—"}</div>
+        <div><span>Mobile</span> ${escapeHtml(client?client.portable_1:"")||"—"}</div>
+        <div><span>E-mail</span> ${escapeHtml(client?client.mail_1:"")||"—"}</div>
+        <div><span>Ancienneté</span> ${escapeHtml(client?client.anciennete:"")||"—"}</div>
+      </div>
+    </div>
+    ${client && (client.evt1 || client.evt2) ? `
+      <div class="print-section">
+        <h3>📅 Historique client</h3>
+        <ul>
+          ${[1,2,3,4,5,6].map(i => {
+            const d = client["evt"+i+"_date"], e = client["evt"+i];
+            if(!d && !e) return "";
+            return `<li><strong>${escapeHtml(fmtDate(d))}</strong> — ${escapeHtml(e||"")}</li>`;
+          }).join("")}
+        </ul>
+      </div>` : ''}
+    <div class="print-section">
+      <h3>🛠️ Compétence travaillée + canal</h3>
+      <div class="narrative">${nl2br(cas.competence_canal||"")}</div>
+    </div>
+    <p style="font-size:.78rem;color:#6b7280;text-align:center;margin-top:2rem;border-top:1px solid #e1e5ee;padding-top:.4rem">Document à conserver par le stagiaire-conseiller pendant l'appel · TMK Performances · ${todayFr()}</p>
+  `;
+  zone.appendChild(p1);
+
+  // Page 2 : brief candidat-client
+  const p2 = el("div", {class:"print-page"});
+  p2.innerHTML = `
+    <div class="print-header">
+      <div class="brand-mark"><strong style="color:#1a2e5c">TMK</strong> <span style="color:#f26749">Performances</span></div>
+      <div class="print-meta">
+        <strong>Brief candidat — Client</strong><br>
+        Cas n° ${escapeHtml(cas.num_appel)}<br>
+        Sujet : On The Road
+      </div>
+    </div>
+    <div class="print-section">
+      <h3>🎭 Votre rôle</h3>
+      <div class="narrative role">${nl2br(cas.role||"Non défini")}</div>
+    </div>
+    ${cas.objet ? `
+      <div class="print-section">
+        <h3>📦 Objet de l'appel (produits, références, montants)</h3>
+        <div class="narrative">${nl2br(cas.objet)}</div>
+      </div>` : ''}
+    <div class="print-section">
+      <h3>💬 Profil et éléments à révéler progressivement</h3>
+      <div class="narrative role">${nl2br(cas.profil||"Aucun élément spécifique")}</div>
+    </div>
+    <div class="print-section">
+      <h3>👤 Vos coordonnées en tant que client (à donner si demandé)</h3>
+      <div class="info-grid">
+        <div><span>Civilité, nom prénom</span> ${escapeHtml(client?fullName(client):"")}</div>
+        <div><span>Raison sociale</span> ${escapeHtml(client?societe(client):"")}</div>
+        <div><span>Adresse</span> ${escapeHtml(client?client.adresse_f:"")}</div>
+        <div><span>CP / Ville</span> ${escapeHtml(client?client.cp_f+" "+client.ville_f:"")}</div>
+        <div><span>Téléphone</span> ${escapeHtml(client?(client.fixe_1||client.portable_1):"")||"—"}</div>
+        <div><span>E-mail</span> ${escapeHtml(client?client.mail_1:"")||"—"}</div>
+      </div>
+    </div>
+    <p style="font-size:.78rem;color:#6b7280;text-align:center;margin-top:2rem;border-top:1px solid #e1e5ee;padding-top:.4rem">⚠️ Document confidentiel — à ne pas montrer au stagiaire-conseiller · TMK Performances · ${todayFr()}</p>
+  `;
+  zone.appendChild(p2);
+
+  document.body.appendChild(zone);
+  setTimeout(()=>{ window.print(); }, 200);
+}
+
+/* === FORMATEUR : FICHES CLIENTS (BDD) === */
+VIEWS.clients = function(root){
+  root.appendChild(el("h1", {class:"mb-2"}, "Fiches clients (BDD)"));
+  root.appendChild(el("p", {class:"text-muted mb-3"}, "Base de données de tous les clients / prospects utilisés dans les simulations."));
+
+  const tb = el("div", {class:"admin-toolbar"});
+  const search = el("input", {type:"text", class:"search", placeholder:"🔍 Rechercher (réf, nom, ville, raison sociale…)"});
+  tb.appendChild(search);
+  tb.appendChild(el("button", {class:"btn orange", type:"button", onclick: () => editClient(null)}, "+ Nouvelle fiche"));
+  root.appendChild(tb);
+
+  const wrap = el("div", {class:"admin-table-wrap"});
+  const scroll = el("div", {class:"scroll"});
+  const table = el("table", {class:"table"});
+  table.innerHTML = `
+    <thead><tr><th>Réf.</th><th>Civilité / Nom</th><th>Société</th><th>Ville</th><th>Téléphone</th><th>Mission</th><th></th></tr></thead>
+    <tbody id="cliBody"></tbody>
+  `;
+  scroll.appendChild(table);
+  wrap.appendChild(scroll);
+  root.appendChild(wrap);
+
+  function render(){
+    const f = (search.value||"").toLowerCase();
+    const tbody = $("#cliBody");
+    tbody.innerHTML = "";
+    let count = 0;
+    STORE.clients.forEach(c => {
+      const hay = (c.ref+" "+c.nom+" "+c.prenom+" "+c.raison_sociale+" "+c.ville_f+" "+c.fixe_1).toLowerCase();
+      if(f && !hay.includes(f)) return;
+      count++;
+      const tr = el("tr", {});
+      tr.innerHTML = `
+        <td><strong>${escapeHtml(c.ref)}</strong></td>
+        <td>${escapeHtml(fullName(c))}</td>
+        <td>${escapeHtml(societe(c))}</td>
+        <td>${escapeHtml(c.ville_f||"—")}</td>
+        <td><small style="font-variant-numeric:tabular-nums">${escapeHtml(c.fixe_1||c.portable_1||"—")}</small></td>
+        <td><small class="text-muted">${escapeHtml((c.competence||"").substring(0,40))}…</small></td>
+        <td><div class="row-actions">
+          <button class="icon-btn" type="button" data-edit="${escapeHtml(c.ref)}">✏️</button>
+          <button class="icon-btn danger" type="button" data-del="${escapeHtml(c.ref)}">🗑️</button>
+        </div></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    if(count===0) tbody.appendChild(el("tr", {}, el("td", {colspan:"7", class:"empty"}, "Aucune fiche correspondante")));
+    $$("[data-edit]").forEach(b => b.addEventListener("click", () => editClient(b.dataset.edit)));
+    $$("[data-del]").forEach(b => b.addEventListener("click", () => {
+      confirmDialog(`Supprimer la fiche ${b.dataset.del} ? Le cas associé deviendra non jouable.`, () => {
+        STORE.clients = STORE.clients.filter(x => x.ref !== b.dataset.del);
+        saveStore(); render(); toast("Fiche supprimée", "success");
+      });
+    }));
+  }
+  search.addEventListener("input", render);
+  render();
+};
+
+function editClient(ref){
+  const isNew = !ref;
+  const c = isNew ? { ref:"", civilite:"M.", nom:"", prenom:"", raison_sociale:"", fonction:"", service:"",
+                      adresse_f:"", complement_adresse_f:"", cp_f:"", ville_f:"", cedex_f:"",
+                      fixe_1:"", portable_1:"", mail_1:"",
+                      nom_2:"", prenom_2:"", fonction_2:"", service_l:"",
+                      adresse_l:"", complement_adresse_l:"", cp_l:"", ville_l:"", cedex_l:"",
+                      fixe_2:"", portable_2:"", mail_2:"",
+                      anciennete:"",
+                      evt1_date:"", evt1:"", evt2_date:"", evt2:"", evt3_date:"", evt3:"",
+                      evt4_date:"", evt4:"", evt5_date:"", evt5:"", evt6_date:"", evt6:"",
+                      mission:"", competence:"", montant_facture:"" }
+                  : structuredClone(STORE.clients.find(x => x.ref === ref));
+  if(!c){ toast("Fiche introuvable", "error"); return; }
+
+  const form = el("div", {});
+  form.innerHTML = `
+    <h4 class="mb-1">📄 Identification</h4>
+    <div class="grid-3">
+      <div class="form-field"><label>Référence *</label><input id="fRef" value="${escapeHtml(c.ref)}" ${isNew?'':'readonly'} placeholder="ex : 5-01"></div>
+      <div class="form-field"><label>Civilité</label>
+        <select id="fCiv">
+          <option ${c.civilite==="M."?"selected":""}>M.</option>
+          <option ${c.civilite==="Mme"?"selected":""}>Mme</option>
+          <option ${c.civilite==="Mlle"?"selected":""}>Mlle</option>
+          <option value=""></option>
+        </select>
+      </div>
+      <div class="form-field"><label>Raison sociale</label><input id="fRS" value="${escapeHtml(c.raison_sociale||"")}" placeholder="Particulier si vide"></div>
+    </div>
+    <div class="grid-3">
+      <div class="form-field"><label>Nom *</label><input id="fNom" value="${escapeHtml(c.nom)}"></div>
+      <div class="form-field"><label>Prénom</label><input id="fPre" value="${escapeHtml(c.prenom||"")}"></div>
+      <div class="form-field"><label>Fonction</label><input id="fFon" value="${escapeHtml(c.fonction||"")}"></div>
+    </div>
+
+    <h4 class="mb-1 mt-2">📍 Adresse de facturation</h4>
+    <div class="grid-2">
+      <div class="form-field"><label>Adresse</label><input id="fAdr" value="${escapeHtml(c.adresse_f||"")}"></div>
+      <div class="form-field"><label>Complément d'adresse</label><input id="fAdrC" value="${escapeHtml(c.complement_adresse_f||"")}"></div>
+    </div>
+    <div class="grid-3">
+      <div class="form-field"><label>Code postal</label><input id="fCP" value="${escapeHtml(c.cp_f||"")}"></div>
+      <div class="form-field"><label>Ville</label><input id="fVille" value="${escapeHtml(c.ville_f||"")}"></div>
+      <div class="form-field"><label>Cedex</label><input id="fCedex" value="${escapeHtml(c.cedex_f||"")}"></div>
+    </div>
+
+    <h4 class="mb-1 mt-2">📞 Coordonnées</h4>
+    <div class="grid-3">
+      <div class="form-field"><label>Tél fixe</label><input id="fTel" value="${escapeHtml(c.fixe_1||"")}"></div>
+      <div class="form-field"><label>Mobile</label><input id="fMob" value="${escapeHtml(c.portable_1||"")}"></div>
+      <div class="form-field"><label>E-mail</label><input id="fMail" value="${escapeHtml(c.mail_1||"")}"></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-field"><label>Ancienneté</label><input id="fAnc" value="${escapeHtml(c.anciennete||"")}" placeholder="JJ/MM/AAAA ou nb d'années"></div>
+      <div class="form-field"><label>Montant facture/contentieux (€)</label><input id="fMon" value="${escapeHtml(c.montant_facture||"")}"></div>
+    </div>
+
+    <h4 class="mb-1 mt-2">🎯 Mission et compétence</h4>
+    <div class="form-field"><label>Mission du conseiller (briefing stagiaire)</label><textarea id="fMis" rows="3">${escapeHtml(c.mission||"")}</textarea></div>
+    <div class="form-field"><label>Compétence ciblée</label><input id="fCom" value="${escapeHtml(c.competence||"")}"></div>
+
+    <h4 class="mb-1 mt-2">📅 Historique des événements</h4>
+    ${[1,2,3,4,5,6].map(i => `
+      <div class="grid-2 mb-1">
+        <div class="form-field"><label>Date événement ${i}</label><input id="fEd${i}" value="${escapeHtml(c["evt"+i+"_date"]||"")}" placeholder="JJ/MM/AAAA"></div>
+        <div class="form-field"><label>Description événement ${i}</label><input id="fEv${i}" value="${escapeHtml(c["evt"+i]||"")}"></div>
+      </div>
+    `).join("")}
+
+    <h4 class="mb-1 mt-2">🚚 Adresse de livraison (si différente)</h4>
+    <div class="grid-2">
+      <div class="form-field"><label>Adresse livraison</label><input id="fAdrL" value="${escapeHtml(c.adresse_l||"")}"></div>
+      <div class="form-field"><label>Complément</label><input id="fAdrLC" value="${escapeHtml(c.complement_adresse_l||"")}"></div>
+    </div>
+    <div class="grid-3">
+      <div class="form-field"><label>CP livraison</label><input id="fCPL" value="${escapeHtml(c.cp_l||"")}"></div>
+      <div class="form-field"><label>Ville livraison</label><input id="fVilleL" value="${escapeHtml(c.ville_l||"")}"></div>
+      <div class="form-field"><label>Cedex livraison</label><input id="fCedexL" value="${escapeHtml(c.cedex_l||"")}"></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-field"><label>Contact 2 — nom</label><input id="fNom2" value="${escapeHtml(c.nom_2||"")}"></div>
+      <div class="form-field"><label>Contact 2 — prénom</label><input id="fPre2" value="${escapeHtml(c.prenom_2||"")}"></div>
+    </div>
+    <div class="grid-3">
+      <div class="form-field"><label>Tél fixe 2</label><input id="fTel2" value="${escapeHtml(c.fixe_2||"")}"></div>
+      <div class="form-field"><label>Mobile 2</label><input id="fMob2" value="${escapeHtml(c.portable_2||"")}"></div>
+      <div class="form-field"><label>E-mail 2</label><input id="fMail2" value="${escapeHtml(c.mail_2||"")}"></div>
+    </div>
+  `;
+  openModal({
+    title: isNew?"Nouvelle fiche client":"Modifier "+c.ref+" — "+fullName(c),
+    body: form,
+    size:"large",
+    foot: [
+      el("button", {class:"btn outline", type:"button", onclick: closeModal}, "Annuler"),
+      el("button", {class:"btn", type:"button", onclick: () => {
+        const newRef = $("#fRef").value.trim();
+        const nom = $("#fNom").value.trim();
+        if(!newRef || !nom){ toast("Référence et nom obligatoires", "error"); return; }
+        if(isNew && STORE.clients.find(x => x.ref === newRef)){ toast("Cette référence existe déjà", "error"); return; }
+        const v = (id) => $("#"+id).value.trim();
+        const updated = {
+          ref: newRef, civilite: v("fCiv"), nom, prenom: v("fPre"), raison_sociale: v("fRS"),
+          fonction: v("fFon"), service:"",
+          adresse_f: v("fAdr"), complement_adresse_f: v("fAdrC"), cp_f: v("fCP"), ville_f: v("fVille"), cedex_f: v("fCedex"),
+          fixe_1: v("fTel"), portable_1: v("fMob"), mail_1: v("fMail"),
+          nom_2: v("fNom2"), prenom_2: v("fPre2"), fonction_2: c.fonction_2||"",
+          service_l:"", adresse_l: v("fAdrL"), complement_adresse_l: v("fAdrLC"),
+          cp_l: v("fCPL"), ville_l: v("fVilleL"), cedex_l: v("fCedexL"),
+          fixe_2: v("fTel2"), portable_2: v("fMob2"), mail_2: v("fMail2"),
+          anciennete: v("fAnc"),
+          mission: v("fMis"), competence: v("fCom"), montant_facture: v("fMon"),
+        };
+        for(let i=1;i<=6;i++){
+          updated["evt"+i+"_date"] = v("fEd"+i);
+          updated["evt"+i] = v("fEv"+i);
+        }
+        if(isNew) STORE.clients.push(updated);
+        else {
+          const idx = STORE.clients.findIndex(x => x.ref === ref);
+          STORE.clients[idx] = updated;
+        }
+        saveStore();
+        closeModal();
+        toast(isNew?"Fiche créée":"Fiche modifiée", "success");
+        navigateTo("clients");
+      }}, "Enregistrer"),
+    ]
+  });
+}
+
+/* === FORMATEUR : SESSIONS STAGIAIRES === */
+VIEWS.sessions = function(root){
+  root.appendChild(el("h1", {class:"mb-2"}, "Sessions stagiaires"));
+  root.appendChild(el("p", {class:"text-muted mb-3"}, `${STORE.sessions.length} session(s) enregistrée(s) sur ce poste.`));
+
+  const tb = el("div", {class:"admin-toolbar"});
+  const search = el("input", {type:"text", class:"search", placeholder:"🔍 Rechercher (stagiaire, cas, compétence)…"});
+  tb.appendChild(search);
+  tb.appendChild(el("button", {class:"btn outline", type:"button", onclick: () => {
+    confirmDialog("Effacer toutes les sessions enregistrées ? Cette action est irréversible.", () => {
+      STORE.sessions = [];
+      saveStore();
+      navigateTo("sessions");
+      toast("Sessions effacées", "success");
+    });
+  }}, "🗑️ Tout effacer"));
+  root.appendChild(tb);
+
+  if(STORE.sessions.length === 0){
+    root.appendChild(el("div", {class:"empty"}, [
+      el("div", {class:"ico"}, "📞"),
+      el("h4", {}, "Aucune session enregistrée pour le moment"),
+      el("p", {}, "Les sessions de simulation des stagiaires s'afficheront ici."),
+    ]));
+    return;
+  }
+
+  const wrap = el("div", {class:"admin-table-wrap"});
+  const scroll = el("div", {class:"scroll"});
+  const table = el("table", {class:"table"});
+  table.innerHTML = `
+    <thead><tr><th>Stagiaire</th><th>Cas</th><th>Compétence</th><th>Début</th><th>Durée</th><th>Hist.</th><th>Prod.</th><th></th></tr></thead>
+    <tbody id="sessBody"></tbody>
+  `;
+  scroll.appendChild(table);
+  wrap.appendChild(scroll);
+  root.appendChild(wrap);
+
+  function render(){
+    const f = (search.value||"").toLowerCase();
+    const tbody = $("#sessBody");
+    tbody.innerHTML = "";
+    [...STORE.sessions].reverse().forEach((s, idx) => {
+      const realIdx = STORE.sessions.length - 1 - idx;
+      const hay = (s.stagiaire+" "+s.case_ref+" "+(s.competence||"")).toLowerCase();
+      if(f && !hay.includes(f)) return;
+      const dur = s.duration_min || 0;
+      const date = s.started_at ? new Date(s.started_at).toLocaleString("fr-FR") : "—";
+      const prods = Object.values(s.productions||{}).filter(p => p && (p.body || p.subject)).length;
+      const tr = el("tr", {});
+      tr.innerHTML = `
+        <td><strong>${escapeHtml(s.stagiaire)}</strong></td>
+        <td><span class="badge-pill pill-navy">${escapeHtml(s.case_ref)}</span></td>
+        <td><small>${escapeHtml((s.competence||"—").substring(0,40))}</small></td>
+        <td><small>${escapeHtml(date)}</small></td>
+        <td>${dur} min</td>
+        <td>${(s.historisation||[]).length}</td>
+        <td>${prods}</td>
+        <td><div class="row-actions">
+          <button class="icon-btn" type="button" data-view="${realIdx}">👁️</button>
+          <button class="icon-btn danger" type="button" data-del="${realIdx}">🗑️</button>
+        </div></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    $$("[data-view]").forEach(b => b.addEventListener("click", () => viewSession(parseInt(b.dataset.view))));
+    $$("[data-del]").forEach(b => b.addEventListener("click", () => {
+      const i = parseInt(b.dataset.del);
+      confirmDialog("Supprimer cette session ?", () => {
+        STORE.sessions.splice(i, 1);
+        saveStore(); render(); toast("Session supprimée", "success");
+      });
+    }));
+  }
+  search.addEventListener("input", render);
+  render();
+};
+
+function viewSession(idx){
+  const s = STORE.sessions[idx];
+  if(!s){ return; }
+  const client = STORE.clients.find(c => c.ref === s.case_ref);
+  const body = el("div", {});
+  body.innerHTML = `
+    <div class="grid-2 mb-2">
+      <div><strong>Stagiaire :</strong> ${escapeHtml(s.stagiaire)}</div>
+      <div><strong>Cas :</strong> ${escapeHtml(s.case_ref)} — ${escapeHtml(client?fullName(client):"")}</div>
+      <div><strong>Durée :</strong> ${s.duration_min||0} min</div>
+      <div><strong>Compétence :</strong> ${escapeHtml(s.competence||"—")}</div>
+    </div>
+    <h4 class="mb-1">📝 Historisation (${(s.historisation||[]).length})</h4>
+    ${(s.historisation||[]).length ? '<ol>' + s.historisation.map(h => `<li><strong>${escapeHtml(h.date)} ${escapeHtml(h.time||"")}</strong> — ${escapeHtml(h.action)}${h.comment?'<br><em>'+escapeHtml(h.comment)+'</em>':''}</li>`).join('') + '</ol>' : '<em class="text-muted">Aucune historisation</em>'}
+    ${s.wrap_up ? `<h4 class="mb-1 mt-2">🎬 Wrap-up</h4><div class="well">${nl2br(s.wrap_up)}</div>` : ''}
+    ${(s.productions && s.productions.mail && s.productions.mail.body) ? `<h4 class="mb-1 mt-2">📧 E-mail</h4><div class="well"><strong>Objet :</strong> ${escapeHtml(s.productions.mail.subject||"")}<br><br>${nl2br(s.productions.mail.body)}</div>` : ''}
+    ${(s.productions && s.productions.sms && s.productions.sms.body) ? `<h4 class="mb-1 mt-2">📱 SMS</h4><div class="well">${nl2br(s.productions.sms.body)}</div>` : ''}
+    ${(s.productions && s.productions.courrier && s.productions.courrier.body) ? `<h4 class="mb-1 mt-2">✉️ Courrier</h4><div class="well"><strong>Objet :</strong> ${escapeHtml(s.productions.courrier.subject||"")}<br><br>${nl2br(s.productions.courrier.body)}</div>` : ''}
+  `;
+  openModal({
+    title: "Session " + s.stagiaire + " · " + s.case_ref,
+    body, size:"large",
+    foot: [
+      el("button", {class:"btn outline", type:"button", onclick: () => {
+        // Export this session as PDF
+        STATE.currentSession = s;
+        buildSessionPrintable(s);
+        setTimeout(()=>window.print(), 200);
+      }}, "🖨️ Imprimer / PDF"),
+      el("button", {class:"btn", type:"button", onclick: closeModal}, "Fermer"),
+    ]
+  });
+}
+
+/* === FORMATEUR : PARAMETRES === */
+VIEWS.params = function(root){
+  root.appendChild(el("h1", {class:"mb-2"}, "Paramètres"));
+  root.appendChild(el("p", {class:"text-muted mb-3"}, "Sauvegarde, import, code formateur et réinitialisation."));
+
+  const grid = el("div", {class:"grid-2"});
+
+  // Card: code formateur
+  const c1 = el("div", {class:"card"});
+  c1.innerHTML = `
+    <div class="card-header"><h2>🔐 Code formateur</h2></div>
+    <p class="text-muted text-small">Mot de passe demandé à la connexion en mode Formateur.</p>
+    <div class="form-field"><label>Code actuel</label><input type="password" id="oldPwd"></div>
+    <div class="form-field"><label>Nouveau code</label><input type="password" id="newPwd"></div>
+    <button class="btn" type="button" id="btnChangePwd">Changer le code</button>
+  `;
+  grid.appendChild(c1);
+
+  // Card: export / import
+  const c2 = el("div", {class:"card"});
+  c2.innerHTML = `
+    <div class="card-header"><h2>💾 Sauvegarde</h2></div>
+    <p class="text-muted text-small">Exportez ou importez l'ensemble de la base (catalogue, fiches, cas, sessions) au format JSON.</p>
+    <div class="flex gap-1 mt-1">
+      <button class="btn" type="button" id="btnExport">📥 Exporter en JSON</button>
+      <label class="btn outline" style="cursor:pointer">📤 Importer un JSON
+        <input type="file" id="fileImport" accept="application/json" style="display:none">
+      </label>
+    </div>
+    <p class="text-small mt-2 text-muted">L'import remplace l'intégralité des données par celles du fichier importé.</p>
+  `;
+  grid.appendChild(c2);
+
+  // Card: reset
+  const c3 = el("div", {class:"card"});
+  c3.innerHTML = `
+    <div class="card-header"><h2>♻️ Réinitialiser</h2></div>
+    <p class="text-muted text-small">Restaurer les données d'origine (catalogue, fiches et cas du fichier Excel initial).</p>
+    <p class="text-small">⚠️ Toutes vos modifications, ajouts et sessions seront perdus.</p>
+    <button class="btn danger" type="button" id="btnReset">Réinitialiser la base</button>
+  `;
+  grid.appendChild(c3);
+
+  // Card: stats
+  const c4 = el("div", {class:"card"});
+  c4.innerHTML = `
+    <div class="card-header"><h2>📊 Données actuelles</h2></div>
+    <ul class="text-small">
+      <li><strong>${STORE.cas.length}</strong> cas clients</li>
+      <li><strong>${STORE.clients.length}</strong> fiches BDD</li>
+      <li><strong>${STORE.catalogue.length}</strong> produits / services</li>
+      <li><strong>${STORE.centres.length}</strong> centres agréés</li>
+      <li><strong>${STORE.sessions.length}</strong> sessions enregistrées</li>
+    </ul>
+    <p class="text-small text-muted mt-2">Taille en localStorage : <strong>${Math.round(JSON.stringify(STORE).length/1024)} Ko</strong></p>
+  `;
+  grid.appendChild(c4);
+
+  root.appendChild(grid);
+
+  // Bind handlers
+  $("#btnChangePwd").addEventListener("click", () => {
+    const old = $("#oldPwd").value;
+    const nw = $("#newPwd").value;
+    if(old !== getFormateurPwd()){ toast("Code actuel incorrect", "error"); return; }
+    if(nw.length < 4){ toast("Le nouveau code doit faire au moins 4 caractères", "error"); return; }
+    setFormateurPwd(nw);
+    $("#oldPwd").value = "";
+    $("#newPwd").value = "";
+    toast("Code formateur modifié", "success");
+  });
+  $("#btnExport").addEventListener("click", () => {
+    const data = JSON.stringify(STORE, null, 2);
+    const blob = new Blob([data], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "tmk-otr-" + new Date().toISOString().substring(0,10) + ".json";
+    a.click();
+  });
+  $("#fileImport").addEventListener("change", (e) => {
+    const f = e.target.files[0];
+    if(!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const obj = JSON.parse(reader.result);
+        if(!obj.cas || !obj.clients || !obj.catalogue){ toast("Fichier invalide", "error"); return; }
+        confirmDialog("Remplacer toute la base par le contenu du fichier importé ?", () => {
+          STORE = obj;
+          if(!STORE.sessions) STORE.sessions = [];
+          saveStore();
+          toast("Base importée avec succès", "success");
+          navigateTo("tableau");
+        });
+      }catch(err){
+        toast("Fichier invalide", "error");
+      }
+    };
+    reader.readAsText(f);
+  });
+  $("#btnReset").addEventListener("click", () => {
+    confirmDialog("Réinitialiser la base aux données d'origine ? Toutes vos modifications seront perdues.", () => {
+      const fresh = structuredClone(SEED_DATA);
+      fresh.sessions = [];
+      STORE = fresh;
+      saveStore();
+      toast("Base réinitialisée", "success");
+      navigateTo("tableau");
+    });
+  });
+};
+
+/* ---------------- INIT ---------------------------------- */
+window.addEventListener("DOMContentLoaded", () => {
+  setupLogin();
+});
+
+window.closeModal = closeModal; // expose
+
+</script>
+
+</body>
+</html>
