@@ -839,7 +839,7 @@ textarea{min-height:80px;resize:vertical}
 
 /* Modal large */
 #modalBox.large{max-width:980px}
-#modalBox.small{max-width:480px}
+#modalBox.small{max-width:560px}
 
 /* Sélecteur Journée */
 .journee-selector{
@@ -878,6 +878,219 @@ textarea{min-height:80px;resize:vertical}
   border-radius:6px;letter-spacing:.3px;
 }
 .activity-tile{position:relative}
+
+/* ============== ACCÈS RAPIDE ============== */
+.quick-access-btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:#fff4ef;color:#c43e1a;
+  border:1.5px solid #ffd9c8;border-radius:8px;
+  padding:.5rem .85rem;font-weight:600;font-size:.9rem;
+  cursor:pointer;font-family:inherit;
+  transition:all .15s;
+  margin-right:.6rem;
+}
+.quick-access-btn:hover{
+  background:var(--tmk-orange);color:#fff;border-color:var(--tmk-orange);
+  transform:translateY(-1px);
+  box-shadow:0 2px 6px rgba(242,103,73,.25);
+}
+.qa-icon{font-size:1rem;line-height:1}
+@media(max-width: 600px){
+  .qa-label{display:none}
+}
+
+/* Modale d'accès rapide */
+.qa-grid{
+  display:grid;grid-template-columns:repeat(2, 1fr);gap:.85rem;
+  margin-top:.5rem;
+}
+.qa-tile{
+  background:#fff;border:2px solid var(--border);border-radius:12px;
+  padding:1.1rem 1rem;text-align:left;cursor:pointer;
+  display:flex;flex-direction:column;gap:.3rem;
+  font-family:inherit;transition:all .15s;
+}
+.qa-tile:hover{
+  border-color:var(--tmk-orange);
+  background:#fff4ef;
+  transform:translateY(-2px);
+}
+.qa-tile-emoji{font-size:1.6rem;line-height:1}
+.qa-tile-title{font-weight:700;color:var(--tmk-navy);font-size:1rem}
+.qa-tile-desc{font-size:.82rem;color:var(--text-muted);line-height:1.3}
+@media(max-width: 600px){
+  .qa-grid{grid-template-columns:1fr}
+}
+
+/* ============== CLIENT PANEL (dépliable) ============== */
+.client-panel{
+  background:#fff;border:1.5px solid var(--border);border-radius:10px;
+  margin-bottom:1rem;overflow:hidden;
+}
+.client-panel-empty{
+  padding:.8rem 1rem;color:var(--text-muted);font-style:italic;
+}
+.client-panel-header{
+  width:100%;display:flex;align-items:center;gap:.6rem;
+  background:#f5f6fa;border:none;
+  padding:.7rem 1rem;cursor:pointer;font-family:inherit;
+  text-align:left;font-size:.92rem;
+  color:var(--text);transition:background .15s;
+}
+.client-panel-header:hover{background:#eaecf3}
+.client-panel.open .client-panel-header{background:#e8ecf6;border-bottom:1px solid var(--border)}
+.cp-arrow{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;color:var(--tmk-navy);font-size:.7rem;flex-shrink:0;
+}
+.cp-label{flex:1;color:var(--tmk-navy)}
+.cp-fonction,.cp-ville{color:var(--text-muted);font-weight:400;font-size:.85rem}
+.cp-sub{
+  color:var(--text-muted);font-size:.8rem;font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+@media(max-width: 720px){
+  .cp-sub{display:none}
+}
+.client-panel-body{display:none;padding:1rem 1.25rem;background:#fcfcfd}
+.client-panel.open .client-panel-body{display:block}
+.client-panel-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;
+}
+@media(max-width:720px){
+  .client-panel-grid{grid-template-columns:1fr}
+}
+.client-panel-col h5{
+  margin:0 0 .55rem 0;color:var(--tmk-navy);font-size:.92rem;
+  border-bottom:2px solid var(--tmk-orange);padding-bottom:.3rem;
+}
+.cp-dl{display:grid;grid-template-columns:auto 1fr;gap:.3rem .8rem;margin:0;font-size:.85rem}
+.cp-dl dt{color:var(--text-muted);font-weight:600;white-space:nowrap}
+.cp-dl dd{margin:0;color:var(--text);font-variant-numeric:tabular-nums}
+.cp-events{display:flex;flex-direction:column;gap:.45rem}
+.cp-event{
+  display:grid;grid-template-columns:80px 1fr;gap:.6rem;
+  font-size:.85rem;align-items:start;
+}
+.cp-event-date{
+  color:var(--tmk-navy);font-weight:600;
+  font-variant-numeric:tabular-nums;font-size:.8rem;
+  background:#e8ecf6;padding:.15rem .4rem;border-radius:4px;
+  text-align:center;height:fit-content;
+}
+.cp-event-text{color:var(--text);line-height:1.35}
+.client-panel-mission{
+  margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--border);
+}
+.client-panel-mission h5{
+  margin:0 0 .4rem 0;color:var(--tmk-navy);font-size:.9rem;
+}
+.client-panel-mission p{margin:0;font-size:.88rem;color:var(--text);line-height:1.45}
+
+/* ============== MODE SELECTOR (Remontée) ============== */
+.mode-selector{
+  display:grid;grid-template-columns:1fr 1fr;gap:.8rem;
+}
+.mode-radio{
+  display:flex;align-items:center;gap:.7rem;
+  background:#fff;border:2px solid var(--border);border-radius:10px;
+  padding:.85rem 1rem;cursor:pointer;
+  transition:all .15s;
+}
+.mode-radio:hover{border-color:#cbd0e0}
+.mode-radio.active{
+  border-color:var(--tmk-orange);
+  background:#fff4ef;
+  box-shadow:0 2px 8px rgba(242,103,73,.15);
+}
+.mode-radio input[type=radio]{margin:0;cursor:pointer}
+.mode-icon{font-size:1.6rem;line-height:1}
+.mode-text{display:flex;flex-direction:column;gap:.1rem;flex:1}
+.mode-text strong{color:var(--tmk-navy);font-size:.95rem}
+.mode-text small{color:var(--text-muted);font-size:.8rem}
+@media(max-width:600px){.mode-selector{grid-template-columns:1fr}}
+
+.remontee-bloc{
+  background:#fcfcfd;border:1px solid var(--border);border-radius:8px;
+  padding:.9rem 1rem;margin-bottom:.6rem;
+}
+.remontee-select{font-family:inherit}
+.remontee-client-info{margin-top:.4rem}
+
+/* ============== RECOUVREMENT (factures) ============== */
+.recouv-checklist{
+  background:#fff;border:1px solid var(--border);border-radius:8px;
+  padding:.4rem;display:flex;flex-direction:column;gap:.2rem;
+}
+.recouv-check-row{
+  display:grid;grid-template-columns:auto 90px 1fr;gap:.6rem;
+  padding:.45rem .6rem;border-radius:6px;cursor:pointer;
+  align-items:start;font-size:.88rem;
+}
+.recouv-check-row:hover{background:#fff4ef}
+.recouv-check-row input[type=checkbox]{margin:.2rem 0 0 0;cursor:pointer}
+.recouv-evt-date{
+  color:var(--tmk-navy);font-weight:600;font-size:.8rem;
+  background:#e8ecf6;padding:.15rem .35rem;border-radius:4px;
+  text-align:center;height:fit-content;
+  font-variant-numeric:tabular-nums;
+}
+.recouv-evt-text{color:var(--text);line-height:1.4}
+
+.grid-recouv{
+  display:grid;grid-template-columns:2fr 1.2fr 1fr 30px;gap:.5rem;
+}
+.recouv-head{font-weight:600;color:var(--text-muted);padding:.3rem .2rem}
+.recouv-line{padding:.15rem 0}
+@media(max-width:600px){.grid-recouv{grid-template-columns:1fr 1fr}}
+
+/* Suggestion règlement */
+.regl-suggestions{display:flex;flex-direction:column;gap:.25rem;margin-top:.4rem}
+.regl-suggest-btn{
+  background:#fff;border:1px solid var(--border);border-radius:6px;
+  padding:.4rem .7rem;cursor:pointer;font-family:inherit;
+  text-align:left;font-size:.82rem;color:var(--text);
+  transition:all .15s;
+}
+.regl-suggest-btn:hover{
+  background:#fff4ef;border-color:var(--tmk-orange);
+}
+
+/* ============== ACCÈS RAPIDE — APERÇUS ============== */
+.qa-ref-content{font-size:.92rem}
+.qa-ref-content h3{
+  color:var(--tmk-navy);font-size:1.05rem;margin:.6rem 0 .4rem 0;
+  border-bottom:2px solid var(--tmk-orange);padding-bottom:.25rem;
+}
+.qa-cat-list{display:flex;flex-direction:column;gap:.35rem;max-height:540px;overflow-y:auto}
+.qa-cat-row{
+  display:grid;grid-template-columns:90px 1fr 100px;gap:.6rem;
+  background:#fcfcfd;border:1px solid var(--border);border-radius:6px;
+  padding:.5rem .75rem;font-size:.85rem;align-items:start;
+}
+.qa-cat-ref{color:var(--tmk-navy);font-variant-numeric:tabular-nums}
+.qa-cat-des{display:flex;flex-direction:column;gap:.2rem;line-height:1.3}
+.qa-cat-des strong{color:var(--text)}
+.qa-cat-des .badge-pill{align-self:flex-start;margin-top:.1rem}
+.qa-cat-price{
+  text-align:right;font-variant-numeric:tabular-nums;
+  color:var(--tmk-navy);font-size:.85rem;
+}
+.qa-cat-price small{color:var(--text-muted);font-size:.75rem}
+.qa-centres-list{max-height:520px;overflow-y:auto}
+.cgv-section-lite{
+  background:#fff;border:1px solid var(--border);border-radius:6px;
+  padding:.4rem .75rem;margin-bottom:.4rem;
+}
+.cgv-section-lite summary{
+  cursor:pointer;padding:.3rem 0;color:var(--tmk-navy);
+  list-style:revert;
+}
+.cgv-section-lite summary:hover{color:var(--tmk-orange)}
+.cgv-section-lite .cgv-content{
+  margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border);
+  font-size:.88rem;line-height:1.5;color:var(--text);
+}
 
 /* CGV */
 .cgv-section{
@@ -1090,6 +1303,10 @@ textarea{min-height:80px;resize:vertical}
         <span class="brand-tagline">On The Road · Simulation Relation Client</span>
       </div>
       <div class="user-chip">
+        <button class="quick-access-btn" id="btnQuickAccess" type="button" title="Accès rapide aux références">
+          <span class="qa-icon">📚</span>
+          <span class="qa-label">Références</span>
+        </button>
         <div class="who">
           <strong id="userName">—</strong>
           <small id="userRole">—</small>
@@ -1314,10 +1531,66 @@ function initials(name){
   return name.split(/\s+/).filter(Boolean).slice(0,2).map(p=>p[0].toUpperCase()).join("");
 }
 function fullName(c){
-  return [c.civilite, c.prenom, c.nom].filter(Boolean).join(" ").trim();
+  if(!c) return "";
+  const civ = c.civilite_1 || c.civilite || "";
+  const pre = c.prenom_1 || c.prenom || "";
+  const nom = c.nom_1 || c.nom || "";
+  return [civ, pre, nom].filter(Boolean).join(" ").trim();
 }
 function societe(c){
-  return c.raison_sociale && c.raison_sociale.trim() ? c.raison_sociale : "Particulier";
+  if(!c) return "Particulier";
+  const rs = c.raison_sociale_f || c.raison_sociale || "";
+  return rs && rs.trim() ? rs.trim() : "Particulier";
+}
+
+/* === clientInfo : normalise les accès clients (J1 et J2 ont des noms de clés différents) === */
+function clientInfo(c){
+  if(!c) return null;
+  return {
+    ref: c.ref || "",
+    journee: c.journee || 1,
+    civilite: c.civilite_1 || c.civilite || "",
+    nom: c.nom_1 || c.nom || "",
+    prenom: c.prenom_1 || c.prenom || "",
+    raison_sociale: c.raison_sociale_f || c.raison_sociale || "",
+    fonction: c.fonction || "",
+    adresse: c.adresse_f || "",
+    cp: c.cp_f || "",
+    ville: c.ville_f || "",
+    fixe: c.fixe_1 || "",
+    portable: c.portable_1 || "",
+    mail: c.mail_1 || "",
+    contact_2: {
+      civilite: c.civilite_2 || "",
+      nom: c.nom_2 || "",
+      prenom: c.prenom_2 || "",
+      fonction: c.fonction_2 || "",
+      fixe: c.fixe_2 || "",
+      portable: c.portable_2 || "",
+      mail: c.mail_2 || "",
+    },
+    adresse_l: c.adresse_l || "",
+    cp_l: c.cp_l || "",
+    ville_l: c.ville_l || "",
+    anciennete: c.anciennete || "",
+    mission: c.mission || "",
+    competence: c.competence || "",
+    montant_facture: c.montant_facture || "",
+    evenements: [1,2,3,4,5,6].map(i => ({
+      date: c["evt"+i+"_date"] || "",
+      texte: c["evt"+i] || ""
+    })).filter(e => e.date || e.texte),
+    raw: c
+  };
+}
+
+/* Retourne un libellé court "Civ. Prénom NOM (Société)" */
+function clientLabel(c){
+  const ci = clientInfo(c);
+  if(!ci) return "—";
+  const nm = [ci.civilite, ci.prenom, ci.nom].filter(Boolean).join(" ").trim() || ci.ref;
+  const rs = ci.raison_sociale ? ` (${ci.raison_sociale})` : "";
+  return nm + rs;
 }
 
 function toast(msg, type="info"){
@@ -1417,6 +1690,172 @@ function setupLogin(){
     $("#loginPwd").value = "";
     $("#formateurSelect").value = "";
   });
+
+  // Accès rapide aux références (catalogue, infos générales, CGV, centres agréés)
+  const btnQA = $("#btnQuickAccess");
+  if(btnQA){
+    btnQA.addEventListener("click", openQuickAccess);
+  }
+}
+
+/* === Modale d'accès rapide aux références === */
+function openQuickAccess(){
+  const grid = el("div", {class:"qa-grid"});
+  const tiles = [
+    {emoji:"📚", title:"Infos générales", desc:"Présentation On The Road, services+, processus", target:"infos"},
+    {emoji:"🛞", title:"Catalogue produits", desc:"Pneus, services, partenaires, prix HT/TTC", target:"catalogue"},
+    {emoji:"📄", title:"CGV", desc:"Conditions générales de vente — 7 sections", target:"cgv"},
+    {emoji:"📍", title:"Centres agréés", desc:"Liste des centres de montage par département", target:"centres"},
+  ];
+  tiles.forEach(t => {
+    const tile = el("button", {class:"qa-tile", type:"button", onclick: () => openQuickRef(t.target, t.title, t.emoji)});
+    tile.innerHTML = `
+      <span class="qa-tile-emoji">${t.emoji}</span>
+      <span class="qa-tile-title">${escapeHtml(t.title)}</span>
+      <span class="qa-tile-desc">${escapeHtml(t.desc)}</span>
+    `;
+    grid.appendChild(tile);
+  });
+  openModal({
+    title: "📚 Accès rapide aux références",
+    body: grid,
+    foot: [el("button", {class:"btn outline", type:"button", onclick: closeModal}, "Fermer")],
+    size: "small"
+  });
+}
+
+/* Ouvre une référence (catalogue/infos/cgv/centres) dans une nouvelle modale,
+   sans quitter la page courante (utile pour ne pas perdre le CRM en cours). */
+function openQuickRef(target, title, emoji){
+  closeModal();
+  setTimeout(() => {
+    const root = el("div", {class:"qa-ref-content"});
+    if(target === "catalogue"){
+      renderCatalogueLite(root);
+    } else if(target === "infos"){
+      renderInfosLite(root);
+    } else if(target === "cgv"){
+      renderCgvLite(root);
+    } else if(target === "centres"){
+      renderCentresLite(root);
+    }
+    openModal({
+      title: `${emoji} ${title}`,
+      body: root,
+      foot: [el("button", {class:"btn outline", type:"button", onclick: closeModal}, "Fermer")],
+      size: "large"
+    });
+  }, 100);
+}
+
+/* Versions allégées des vues — pour la modale d'accès rapide */
+function renderCatalogueLite(root){
+  // Liste recherchable du catalogue
+  const search = el("input", {type:"text", class:"search mb-2", placeholder:"🔍 Rechercher (réf, désignation, catégorie…)"});
+  const list = el("div", {class:"qa-cat-list"});
+  function render(){
+    const f = (search.value||"").toLowerCase();
+    list.innerHTML = "";
+    let n = 0;
+    STORE.catalogue.forEach(c => {
+      const hay = (c.ref+" "+c.designation+" "+(c.categorie||"")+" "+(c.description||"")).toLowerCase();
+      if(f && !hay.includes(f)) return;
+      n++;
+      const row = el("div", {class:"qa-cat-row"});
+      row.innerHTML = `
+        <div class="qa-cat-ref"><strong>${escapeHtml(c.ref)}</strong></div>
+        <div class="qa-cat-des">
+          <strong>${escapeHtml(c.designation||"")}</strong>
+          ${c.description ? '<small class="text-muted">' + escapeHtml(c.description) + '</small>' : ''}
+          ${c.categorie ? '<span class="badge-pill pill-navy-mini">' + escapeHtml(c.categorie) + '</span>' : ''}
+        </div>
+        <div class="qa-cat-price">
+          ${c.ht ? '<small>HT</small> ' + escapeHtml(String(c.ht)) + ' €' : ''}
+          ${c.ttc ? '<br><strong>TTC ' + escapeHtml(String(c.ttc)) + ' €</strong>' : ''}
+        </div>
+      `;
+      list.appendChild(row);
+    });
+    if(!n) list.appendChild(el("p", {class:"text-muted text-small"}, "Aucun produit"));
+  }
+  search.addEventListener("input", render);
+  render();
+  root.appendChild(search);
+  root.appendChild(list);
+}
+
+function renderInfosLite(root){
+  // Aperçu rapide : charte d'accueil + services + processus
+  root.innerHTML = `
+    <h3>🎙️ La charte d'accueil</h3>
+    <p><strong>En réception d'appels :</strong></p>
+    <div class="well">« Bienvenue chez ON THE ROAD, <em>(votre prénom)</em> à votre écoute… Bonjour M. ou Mme »</div>
+    <p class="mt-2"><strong>En émission d'appels :</strong></p>
+    <div class="well">« Bonjour, <em>(votre prénom)</em> d'ON THE ROAD. Vous êtes bien M. ou Mme X… »</div>
+    <h3 class="mt-3">🛒 Le réseau de distribution</h3>
+    <p>ON THE ROAD vend en ligne via <a href="#" onclick="return false">www.ontheroad.com</a>. Livraison à domicile ou en centres partenaires (28 sur le territoire). Tarifs en TTC, TVA récupérable pour les pros. Services+ : immatriculation de véhicules, dépôt de plainte en ligne…</p>
+    <h3 class="mt-3">📞 Processus de prise en charge d'un appel</h3>
+    <ol>
+      <li>Charte d'accueil et identification du client</li>
+      <li>Écoute active et reformulation de la demande</li>
+      <li>Recherche dans la fiche client / catalogue / CGV</li>
+      <li>Proposition de la solution</li>
+      <li>Validation et confirmation par mail/SMS/courrier</li>
+      <li>Historisation de l'appel</li>
+    </ol>
+    <p class="text-muted text-small mt-2"><em>Pour le détail complet, consultez l'onglet <strong>Infos générales</strong> de la barre principale.</em></p>
+  `;
+}
+
+function renderCgvLite(root){
+  const cgv = STORE.cgv || {};
+  if(!cgv.sections || !cgv.sections.length){
+    root.appendChild(el("p", {class:"text-muted"}, "Pas de CGV disponibles."));
+    return;
+  }
+  if(cgv.titre) root.appendChild(el("h3", {}, cgv.titre));
+  if(cgv.preambule){
+    const pre = el("div", {class:"well"});
+    pre.innerHTML = nl2br(cgv.preambule);
+    root.appendChild(pre);
+  }
+  cgv.sections.forEach(s => {
+    const det = el("details", {class:"cgv-section-lite"});
+    const sum = el("summary", {});
+    sum.innerHTML = `<strong>${escapeHtml(s.num||"")} — ${escapeHtml(s.titre||"")}</strong>`;
+    det.appendChild(sum);
+    const cnt = el("div", {class:"cgv-content"});
+    cnt.innerHTML = nl2br(s.contenu||"");
+    det.appendChild(cnt);
+    root.appendChild(det);
+  });
+}
+
+function renderCentresLite(root){
+  const search = el("input", {type:"text", class:"search mb-2", placeholder:"🔍 Rechercher (ville, département, nom…)"});
+  const list = el("div", {class:"qa-centres-list"});
+  function render(){
+    const f = (search.value||"").toLowerCase();
+    list.innerHTML = "";
+    let n = 0;
+    (STORE.centres||[]).forEach(c => {
+      const hay = (c.nom+" "+c.cp+" "+c.ville+" "+(c.adresse||"")+" "+(c.dept||"")).toLowerCase();
+      if(f && !hay.includes(f)) return;
+      n++;
+      const row = el("div", {class:"well mb-2"});
+      row.innerHTML = `
+        <strong>${escapeHtml(c.nom||"—")}</strong> <span class="badge-pill pill-navy-mini">${escapeHtml(c.dept||c.cp||"—")}</span><br>
+        <small>${escapeHtml(c.adresse||"")}, ${escapeHtml(c.cp||"")} ${escapeHtml(c.ville||"")}</small>
+        ${c.tel ? '<br><small><strong>Tél. :</strong> ' + escapeHtml(c.tel) + '</small>' : ''}
+      `;
+      list.appendChild(row);
+    });
+    if(!n) list.appendChild(el("p", {class:"text-muted text-small"}, "Aucun centre"));
+  }
+  search.addEventListener("input", render);
+  render();
+  root.appendChild(search);
+  root.appendChild(list);
 }
 
 function doLogin(){
@@ -1845,7 +2284,9 @@ VIEWS.crm = function(root){
   const fromInp = el("input", {type:"text", value:`${STATE.user.name.toLowerCase().replace(/\s+/g,".")}@ontheroad.com`});
   const toInp = el("input", {type:"text", value: client.mail_1 || ""});
   const subjInp = el("input", {type:"text", placeholder:"Ex : Confirmation de votre commande"});
-  const mailBody = el("textarea", {rows:8, placeholder:`Bonjour ${client.civilite||""} ${client.nom||""},\n\n…\n\nCordialement,\n${STATE.user.name}\nConseiller(e) On The Road`});
+  const _ciMail = clientInfo(client) || {};
+  const _civNomMail = [_ciMail.civilite, _ciMail.nom].filter(Boolean).join(" ");
+  const mailBody = el("textarea", {rows:8, placeholder:`Bonjour ${_civNomMail},\n\n…\n\nCordialement,\n${STATE.user.name}\nConseiller(e) On The Road`});
   ;(session.productions.mail = session.productions.mail || {});
   // restore
   fromInp.value = session.productions.mail.from || fromInp.value;
@@ -1883,7 +2324,9 @@ VIEWS.crm = function(root){
   // Courrier form
   const courPane = el("div", {class:"prod-pane hide", id:"prod-courrier"});
   const courObj = el("input", {type:"text", placeholder:"Objet du courrier"});
-  const courBody = el("textarea", {rows:10, placeholder:`${STATE.user.name}\nOn The Road - Service Client\n\n${client.adresse_f||""}\n${client.cp_f||""} ${client.ville_f||""}\n\nÀ ${client.ville_f||""}, le ${todayFr()}\n\nObjet : …\n\n${client.civilite||""} ${client.nom||""},\n\n…\n\nCordialement,\n${STATE.user.name}`});
+  const _ciCour = clientInfo(client) || {};
+  const _civNomCour = [_ciCour.civilite, _ciCour.nom].filter(Boolean).join(" ");
+  const courBody = el("textarea", {rows:10, placeholder:`${STATE.user.name}\nOn The Road - Service Client\n\n${_ciCour.adresse||""}\n${_ciCour.cp||""} ${_ciCour.ville||""}\n\nÀ ${_ciCour.ville||""}, le ${todayFr()}\n\nObjet : …\n\n${_civNomCour},\n\n…\n\nCordialement,\n${STATE.user.name}`});
   ;(session.productions.courrier = session.productions.courrier || {});
   courObj.value = session.productions.courrier.subject || "";
   courBody.value = session.productions.courrier.body || "";
@@ -1996,7 +2439,7 @@ function buildClientCard(client, cas){
     rowIf("Mobile", client.portable_1, {mono:true}),
     rowIf("E-mail", client.mail_1),
     rowIf("Ancienneté", client.anciennete),
-    client.nom_2 ? rowIf("Contact 2", `${client.civilite||""} ${client.prenom_2||""} ${client.nom_2}`.trim()) : null,
+    client.nom_2 ? rowIf("Contact 2", `${client.civilite_2||client.civilite||""} ${client.prenom_2||""} ${client.nom_2}`.trim()) : null,
     client.fonction_2 ? rowIf("Fonction contact 2", client.fonction_2) : null,
     client.adresse_l ? rowIf("Adresse livraison", client.adresse_l) : null,
     client.cp_l ? rowIf("CP livraison", client.cp_l, {mono:true}) : null,
@@ -2413,7 +2856,8 @@ VIEWS.infos = function(root){
   root.appendChild(grid);
 
   // CGV — affichage structuré par sections
-  root.appendChild(el("h2", {class:"mt-3 mb-2"}, "📜 Conditions Générales de Vente"));
+  const cgvAnchor = el("h2", {class:"mt-3 mb-2", id:"cgv-section"}, "📜 Conditions Générales de Vente");
+  root.appendChild(cgvAnchor);
   const cgv = STORE.cgv || {};
   const cgvCard = el("div", {class:"card"});
 
@@ -3749,21 +4193,132 @@ window.editCgv = editCgv;
 
 /* === OUTILS CONSEILLER (V2 — extension du CRM stagiaire) === */
 
+/* Composant : panneau dépliable avec fiche client + historique
+   Utilisé en haut de tous les outils pour ne pas avoir à quitter l'écran. */
+function clientPanel(client, options){
+  options = options || {};
+  const ci = clientInfo(client);
+  const wrap = el("div", {class:"client-panel"});
+  if(!ci){
+    wrap.innerHTML = `<div class="client-panel-empty"><em>Aucun client lié à cette session.</em></div>`;
+    return wrap;
+  }
+
+  // Header (toujours visible)
+  const header = el("button", {class:"client-panel-header", type:"button"});
+  const sub = [];
+  if(ci.fixe) sub.push(`Tél. ${ci.fixe}`);
+  else if(ci.portable) sub.push(`Mobile ${ci.portable}`);
+  if(ci.mail) sub.push(ci.mail);
+  header.innerHTML = `
+    <span class="cp-arrow">▶</span>
+    <span class="cp-label">
+      <strong>${escapeHtml(clientLabel(client))}</strong>
+      ${ci.fonction ? '<span class="cp-fonction"> · ' + escapeHtml(ci.fonction) + '</span>' : ''}
+      ${ci.ville ? '<span class="cp-ville"> · ' + escapeHtml(ci.ville) + '</span>' : ''}
+    </span>
+    <span class="cp-sub">${escapeHtml(sub.join(" · "))}</span>
+  `;
+  wrap.appendChild(header);
+
+  // Body (dépliable)
+  const body = el("div", {class:"client-panel-body"});
+  const grid = el("div", {class:"client-panel-grid"});
+
+  // Bloc identité complète
+  const lignesId = [];
+  lignesId.push(`<dt>Référence</dt><dd>${escapeHtml(ci.ref)} <span class="badge-pill ${ci.journee===2?'pill-orange-mini':'pill-navy-mini'}">J${ci.journee}</span></dd>`);
+  if(ci.raison_sociale) lignesId.push(`<dt>Raison sociale</dt><dd>${escapeHtml(ci.raison_sociale)}</dd>`);
+  lignesId.push(`<dt>Identité</dt><dd>${escapeHtml(fullName(client))}</dd>`);
+  if(ci.fonction) lignesId.push(`<dt>Fonction</dt><dd>${escapeHtml(ci.fonction)}</dd>`);
+  if(ci.adresse || ci.ville){
+    const adr = [ci.adresse, [ci.cp, ci.ville].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+    lignesId.push(`<dt>Adresse facturation</dt><dd>${escapeHtml(adr)}</dd>`);
+  }
+  if(ci.adresse_l && ci.adresse_l !== ci.adresse){
+    const adrL = [ci.adresse_l, [ci.cp_l, ci.ville_l].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+    lignesId.push(`<dt>Adresse livraison</dt><dd>${escapeHtml(adrL)}</dd>`);
+  }
+  if(ci.fixe) lignesId.push(`<dt>Tél. fixe</dt><dd>${escapeHtml(ci.fixe)}</dd>`);
+  if(ci.portable) lignesId.push(`<dt>Mobile</dt><dd>${escapeHtml(ci.portable)}</dd>`);
+  if(ci.mail) lignesId.push(`<dt>E-mail</dt><dd>${escapeHtml(ci.mail)}</dd>`);
+  if(ci.anciennete) lignesId.push(`<dt>Ancienneté</dt><dd>${escapeHtml(ci.anciennete)}</dd>`);
+  if(ci.montant_facture) lignesId.push(`<dt>Montant en jeu</dt><dd>${escapeHtml(ci.montant_facture)} €</dd>`);
+  // Contact 2 si présent
+  if(ci.contact_2 && (ci.contact_2.nom || ci.contact_2.fixe)){
+    const c2 = ci.contact_2;
+    const c2Name = [c2.civilite, c2.prenom, c2.nom].filter(Boolean).join(" ");
+    const c2Tel = c2.fixe || c2.portable || "";
+    lignesId.push(`<dt>Contact 2</dt><dd>${escapeHtml(c2Name)} ${c2Tel?'<small>'+escapeHtml(c2Tel)+'</small>':''}</dd>`);
+  }
+
+  const colId = el("div", {class:"client-panel-col"});
+  colId.innerHTML = `<h5>📄 Identité</h5><dl class="cp-dl">${lignesId.join("")}</dl>`;
+  grid.appendChild(colId);
+
+  // Bloc historique
+  const colHist = el("div", {class:"client-panel-col"});
+  if(ci.evenements.length){
+    let html = `<h5>📅 Historique de la relation</h5><div class="cp-events">`;
+    ci.evenements.forEach(e => {
+      html += `<div class="cp-event"><span class="cp-event-date">${escapeHtml(e.date || "—")}</span><span class="cp-event-text">${escapeHtml(e.texte)}</span></div>`;
+    });
+    html += `</div>`;
+    colHist.innerHTML = html;
+  } else {
+    colHist.innerHTML = `<h5>📅 Historique de la relation</h5><p class="text-muted text-small"><em>Aucun événement antérieur enregistré.</em></p>`;
+  }
+  grid.appendChild(colHist);
+
+  body.appendChild(grid);
+
+  // Bloc mission (en bas, sur toute la largeur, optionnel)
+  if(options.showMission && ci.mission){
+    const missionBlock = el("div", {class:"client-panel-mission"});
+    missionBlock.innerHTML = `<h5>🎯 Mission</h5><p>${escapeHtml(ci.mission)}</p>`;
+    body.appendChild(missionBlock);
+  }
+
+  wrap.appendChild(body);
+
+  // Toggle
+  header.addEventListener("click", () => {
+    wrap.classList.toggle("open");
+    header.querySelector(".cp-arrow").textContent = wrap.classList.contains("open") ? "▼" : "▶";
+  });
+
+  // Ouvert par défaut si options.open
+  if(options.open){
+    wrap.classList.add("open");
+    header.querySelector(".cp-arrow").textContent = "▼";
+  }
+
+  return wrap;
+}
+
 /* Helper : ouvre un outil dans une grosse modale et persiste le résultat */
 function openOutil(outil){
   const session = STATE.currentSession;
   if(!session) return;
   const cas = STATE.currentCase;
-  const client = STORE.clients.find(c => c.ref === cas.client_ref) || {};
+  const client = STORE.clients.find(c => c.ref === cas.client_ref) || null;
   session.outils = session.outils || {};
   const data = session.outils[outil.id] || {};
 
+  // Wrapper avec : panneau client dépliable + formulaire de l'outil
+  const wrapper = el("div", {});
+  // Pour la remontée client, le panneau est géré différemment (choix client/prospect)
+  if(outil.id !== "remontee"){
+    wrapper.appendChild(clientPanel(client, {open: false, showMission: false}));
+  }
+
   // Construction du formulaire spécifique
   const form = outil.builder(client, cas, data);
+  wrapper.appendChild(form);
 
   // Boutons
   const saveBtn = el("button", {class:"btn orange", type:"button", onclick: () => {
-    const result = readOutilForm(outil.id, form);
+    const result = readOutilForm(outil.id, wrapper);
     session.outils[outil.id] = result;
     saveStore();
     closeModal();
@@ -3793,7 +4348,7 @@ function openOutil(outil){
 
   openModal({
     title: `${outil.emoji} ${outil.titre}`,
-    body: form,
+    body: wrapper,
     foot: buttons,
     size: "large"
   });
@@ -3805,7 +4360,18 @@ function readOutilForm(outilId, form){
   const result = {};
   inputs.forEach(inp => {
     if(!inp.name) return;
-    if(inp.type === "checkbox"){ result[inp.name] = inp.checked; }
+    if(inp.type === "checkbox"){
+      // Cas particulier : evt_N pour le recouvrement → liste d'événements cochés
+      if(inp.name.startsWith("evt_")){
+        result.factures_evt = result.factures_evt || [];
+        if(inp.checked){
+          const idx = parseInt(inp.name.replace("evt_",""));
+          if(!isNaN(idx)) result.factures_evt.push(idx);
+        }
+        return;
+      }
+      result[inp.name] = inp.checked;
+    }
     else if(inp.type === "radio"){ if(inp.checked) result[inp.name] = inp.value; }
     else { result[inp.name] = inp.value; }
   });
@@ -3820,6 +4386,18 @@ function readOutilForm(outilId, form){
       const rem = parseFloat(row.querySelector('[name="l_rem"]').value) || 0;
       if(ref || des){
         result.lignes.push({ref, qte, designation:des, pu_ht:pu, remise_pct:rem, total_ht: qte*pu*(1-rem/100)});
+      }
+    });
+  }
+  // Cas particulier : factures du recouvrement (lignes manuelles)
+  if(outilId === "recouv"){
+    result.factures = [];
+    form.querySelectorAll(".recouv-line").forEach(row => {
+      const ref = row.querySelector('[name="rl_ref"]').value;
+      const date = row.querySelector('[name="rl_date"]').value;
+      const montant = parseFloat(row.querySelector('[name="rl_montant"]').value) || 0;
+      if(ref || date || montant){
+        result.factures.push({ref, date, montant});
       }
     });
   }
@@ -3843,14 +4421,22 @@ function buildBonDeCommande(client, cas, data){
   `;
   wrap.appendChild(header);
 
-  // Récap client (auto)
+  // Récap client (auto) — utilise clientInfo pour gérer les 2 nomenclatures J1/J2
+  const ci = clientInfo(client);
   const recap = el("div", {class:"well mt-2"});
-  recap.innerHTML = `
-    <strong>Facturer à :</strong><br>
-    ${escapeHtml(client.raison_sociale_f || "")} — ${escapeHtml(client.civilite_1||"")} ${escapeHtml(client.nom_1||"")} ${escapeHtml(client.prenom_1||"")}<br>
-    ${escapeHtml(client.adresse_f || "")}, ${escapeHtml(client.cp_f || "")} ${escapeHtml(client.ville_f || "")}<br>
-    📞 ${escapeHtml(client.fixe_1 || client.portable_1 || "")} · ✉ ${escapeHtml(client.mail_1 || "")}
-  `;
+  if(ci){
+    const adr = [ci.adresse, [ci.cp, ci.ville].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+    const tel = ci.fixe || ci.portable || "—";
+    const rs = ci.raison_sociale ? `<strong>${escapeHtml(ci.raison_sociale)}</strong> — ` : "";
+    recap.innerHTML = `
+      <strong>Facturer à :</strong><br>
+      ${rs}${escapeHtml(fullName(client))} ${ci.fonction ? `<small class="text-muted">(${escapeHtml(ci.fonction)})</small>` : ""}<br>
+      ${escapeHtml(adr || "—")}<br>
+      <small><strong>Tél. :</strong> ${escapeHtml(tel)}${ci.mail ? ` · <strong>E-mail :</strong> ${escapeHtml(ci.mail)}` : ""}</small>
+    `;
+  } else {
+    recap.innerHTML = `<em>Aucun client associé.</em>`;
+  }
   wrap.appendChild(recap);
 
   // Lignes
@@ -3930,6 +4516,29 @@ function todayISO(){
 /* ---------- Règlement ---------- */
 function buildReglement(client, cas, data){
   const wrap = el("div", {class:"outil-form"});
+
+  // Aide au choix : sélecteur basé sur l'historique
+  const ci = clientInfo(client);
+  const candidates = [];
+  if(ci){
+    ci.evenements.forEach(e => {
+      const txt = (e.texte || "").toLowerCase();
+      if(/bdc|commande|facture|devis|€|ttc|ht\b/.test(txt)){
+        candidates.push(e);
+      }
+    });
+  }
+  if(candidates.length){
+    const help = el("div", {class:"well text-small mb-2"});
+    let hh = `<strong>📋 Documents trouvés dans l'historique du client</strong> — cliquez sur l'un d'eux pour pré-remplir la référence ci-dessous :<br>`;
+    hh += `<div class="regl-suggestions">`;
+    candidates.forEach((e,i) => {
+      hh += `<button type="button" class="regl-suggest-btn" data-i="${i}" data-text="${escapeHtml(e.texte)}">${escapeHtml(e.date||"—")} · ${escapeHtml(e.texte.substring(0,60))}${e.texte.length>60?"…":""}</button>`;
+    });
+    hh += `</div>`;
+    help.innerHTML = hh;
+    wrap.appendChild(help);
+  }
 
   wrap.appendChild(el("h4", {class:"mb-1"}, "Type de règlement"));
   const typesRow = el("div", {class:"radio-row"});
@@ -4019,28 +4628,115 @@ function buildReglement(client, cas, data){
   `;
   wrap.appendChild(datesGrid);
 
+  // Comportement : clic sur suggestion → pré-remplit ref_doc + montant détecté
+  wrap.querySelectorAll(".regl-suggest-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const txt = btn.dataset.text || "";
+      // Tenter d'extraire un montant (1ère occurrence "X €" ou "X,XX")
+      const m = txt.match(/(\d+[\d\s.,]*)\s*€/);
+      if(m){
+        const num = parseFloat(m[1].replace(/\s/g,"").replace(",","."));
+        if(!isNaN(num)){
+          const inp = wrap.querySelector('[name="montant"]');
+          if(inp && !inp.value) inp.value = num;
+        }
+      }
+      // Tenter d'extraire une référence type "BDC..." ou "FAC..."
+      const r = txt.match(/(BDC[\d\-]+|FAC[\d\-]+|N°\s*[\w\-]+)/i);
+      if(r){
+        const inp = wrap.querySelector('[name="ref_doc"]');
+        if(inp) inp.value = r[1];
+      } else {
+        const inp = wrap.querySelector('[name="ref_doc"]');
+        if(inp && !inp.value) inp.value = txt.substring(0, 60);
+      }
+      toast("Référence pré-remplie depuis l'historique", "success");
+    });
+  });
+
   return wrap;
 }
-
-/* ---------- Recouvrement ---------- */
 function buildRecouvrement(client, cas, data){
   const wrap = el("div", {class:"outil-form"});
 
-  const intro = el("div", {class:"well-warning"}, "⚠️ Procédure de recouvrement : à mobiliser face à un client en situation d'impayé. Bien identifier la créance, négocier un échéancier réaliste, conserver une trace écrite.");
+  const intro = el("div", {class:"well-warning"}, "⚠️ Procédure de recouvrement : à mobiliser face à un client en situation d'impayé. Identifier la ou les facture(s) en souffrance dans l'historique du client, négocier un échéancier réaliste, conserver une trace écrite.");
   wrap.appendChild(intro);
 
-  const grid = el("div", {class:"grid-2 mt-2"});
-  grid.innerHTML = `
+  // === Sélecteur de factures en souffrance ===
+  const ci = clientInfo(client);
+  // Détecter les événements ressemblant à des factures/impayés dans l'historique
+  const factureCandidates = [];
+  if(ci){
+    ci.evenements.forEach((e, idx) => {
+      const txt = (e.texte || "").toLowerCase();
+      if(/facture|impay|recouvr|relance|mise en demeure|échéance|prélèv|reject|solde|bdc[\d-]+|commande/.test(txt)){
+        factureCandidates.push({idx: idx+1, date: e.date, texte: e.texte});
+      }
+    });
+  }
+
+  wrap.appendChild(el("h4", {class:"mt-2 mb-1"}, "📂 Factures / créances en souffrance"));
+
+  const factWrap = el("div", {class:"recouv-factures"});
+  data.factures = data.factures || [];
+
+  if(factureCandidates.length){
+    const helpBox = el("div", {class:"well text-small mt-1 mb-2"});
+    helpBox.innerHTML = `<strong>Cochez les éléments de l'historique concernés par le recouvrement</strong>, ou ajoutez une facture manuellement ci-dessous.`;
+    factWrap.appendChild(helpBox);
+
+    const checklist = el("div", {class:"recouv-checklist"});
+    factureCandidates.forEach(fc => {
+      const checked = (data.factures_evt || []).includes(fc.idx);
+      const row = el("label", {class:"recouv-check-row"});
+      row.innerHTML = `
+        <input type="checkbox" name="evt_${fc.idx}" ${checked?"checked":""}>
+        <span class="recouv-evt-date">${escapeHtml(fc.date || "—")}</span>
+        <span class="recouv-evt-text">${escapeHtml(fc.texte)}</span>
+      `;
+      checklist.appendChild(row);
+    });
+    factWrap.appendChild(checklist);
+  } else {
+    factWrap.appendChild(el("div", {class:"well text-small mt-1 mb-2"},
+      "Aucune facture/impayé détecté automatiquement dans l'historique client. Saisissez la ou les facture(s) ci-dessous."));
+  }
+
+  // Saisie manuelle (lignes ajoutables)
+  factWrap.appendChild(el("h5", {class:"mt-2 mb-1"}, "Saisie complémentaire / autre facture"));
+  const linesWrap = el("div", {class:"recouv-lines"});
+  const headLines = el("div", {class:"grid-recouv recouv-head text-small"});
+  headLines.innerHTML = `<div>Référence facture</div><div>Date</div><div>Montant dû (€)</div><div></div>`;
+  factWrap.appendChild(headLines);
+  factWrap.appendChild(linesWrap);
+
+  const addRecouvLine = (l = {}) => {
+    const row = el("div", {class:"recouv-line grid-recouv"});
+    row.innerHTML = `
+      <input type="text" name="rl_ref" placeholder="ex : FAC26-0142" value="${escapeHtml(l.ref||"")}">
+      <input type="date" name="rl_date" value="${l.date||""}">
+      <input type="number" name="rl_montant" min="0" step="0.01" placeholder="0.00" value="${l.montant||""}">
+      <button type="button" class="btn sm outline" title="Supprimer">✕</button>
+    `;
+    row.querySelector("button").addEventListener("click", () => row.remove());
+    linesWrap.appendChild(row);
+  };
+
+  if(data.factures && data.factures.length){
+    data.factures.forEach(addRecouvLine);
+  } else {
+    addRecouvLine();
+  }
+
+  const btnAddFact = el("button", {class:"btn sm outline mt-1", type:"button", onclick: () => addRecouvLine()}, "+ Ajouter une facture");
+  factWrap.appendChild(btnAddFact);
+  wrap.appendChild(factWrap);
+
+  // === Total dû ===
+  const totalGrid = el("div", {class:"grid-2 mt-2"});
+  totalGrid.innerHTML = `
     <div class="form-field">
-      <label>Référence facture en impayé</label>
-      <input type="text" name="ref_facture" value="${escapeHtml(data.ref_facture || "")}">
-    </div>
-    <div class="form-field">
-      <label>Date facture initiale</label>
-      <input type="date" name="date_facture" value="${data.date_facture || ""}">
-    </div>
-    <div class="form-field">
-      <label>Montant créance restant due (€)</label>
+      <label>Total créance restant due (€) — somme</label>
       <input type="number" name="montant_du" min="0" step="0.01" value="${data.montant_du || ""}">
     </div>
     <div class="form-field">
@@ -4048,7 +4744,7 @@ function buildRecouvrement(client, cas, data){
       <input type="date" name="date_solde" value="${data.date_solde || ""}">
     </div>
   `;
-  wrap.appendChild(grid);
+  wrap.appendChild(totalGrid);
 
   wrap.appendChild(el("h4", {class:"mt-2 mb-1"}, "Échéancier négocié"));
   const echeanceGrid = el("div", {class:"grid-2"});
@@ -4193,13 +4889,14 @@ function buildParrainage(client, cas, data){
   wrap.appendChild(info);
 
   wrap.appendChild(el("h4", {class:"mt-2 mb-1"}, "Parrain / Marraine (le client actuel)"));
+  const ciP = clientInfo(client) || {};
   const grid = el("div", {class:"grid-2"});
   grid.innerHTML = `
-    <div class="form-field"><label>Nom</label><input type="text" name="parrain_nom" value="${escapeHtml(data.parrain_nom || client.nom_1 || "")}"></div>
-    <div class="form-field"><label>Prénom</label><input type="text" name="parrain_prenom" value="${escapeHtml(data.parrain_prenom || client.prenom_1 || "")}"></div>
-    <div class="form-field"><label>Adresse</label><input type="text" name="parrain_adresse" value="${escapeHtml(data.parrain_adresse || client.adresse_f || "")}"></div>
-    <div class="form-field"><label>Téléphone</label><input type="text" name="parrain_tel" value="${escapeHtml(data.parrain_tel || client.fixe_1 || client.portable_1 || "")}"></div>
-    <div class="form-field"><label>Email</label><input type="email" name="parrain_mail" value="${escapeHtml(data.parrain_mail || client.mail_1 || "")}"></div>
+    <div class="form-field"><label>Nom</label><input type="text" name="parrain_nom" value="${escapeHtml(data.parrain_nom || ciP.nom || "")}"></div>
+    <div class="form-field"><label>Prénom</label><input type="text" name="parrain_prenom" value="${escapeHtml(data.parrain_prenom || ciP.prenom || "")}"></div>
+    <div class="form-field"><label>Adresse</label><input type="text" name="parrain_adresse" value="${escapeHtml(data.parrain_adresse || ciP.adresse || "")}"></div>
+    <div class="form-field"><label>Téléphone</label><input type="text" name="parrain_tel" value="${escapeHtml(data.parrain_tel || ciP.fixe || ciP.portable || "")}"></div>
+    <div class="form-field"><label>Email</label><input type="email" name="parrain_mail" value="${escapeHtml(data.parrain_mail || ciP.mail || "")}"></div>
   `;
   wrap.appendChild(grid);
 
@@ -4240,15 +4937,75 @@ function buildRemonteeClient(client, cas, data){
 
   wrap.appendChild(el("p", {class:"text-muted"}, "Fiche de remontée client : enregistrer une demande, une réclamation ou un retour client."));
 
-  const grid = el("div", {class:"grid-2"});
-  grid.innerHTML = `
+  // === Mode : client existant / nouveau prospect ===
+  // Pré-sélection : si client existe en BDD pour le cas en cours -> CLIENT, sinon PROSPECT
+  const initialMode = data.mode || (client && client.ref ? "CLIENT" : "PROSPECT");
+
+  const modeSelector = el("div", {class:"mode-selector mt-2 mb-2"});
+  modeSelector.innerHTML = `
+    <label class="mode-radio ${initialMode==='CLIENT'?'active':''}">
+      <input type="radio" name="mode" value="CLIENT" ${initialMode==='CLIENT'?'checked':''}>
+      <span class="mode-icon">👤</span>
+      <span class="mode-text"><strong>Client existant</strong><small>Sélection dans la base</small></span>
+    </label>
+    <label class="mode-radio ${initialMode==='PROSPECT'?'active':''}">
+      <input type="radio" name="mode" value="PROSPECT" ${initialMode==='PROSPECT'?'checked':''}>
+      <span class="mode-icon">🆕</span>
+      <span class="mode-text"><strong>Nouveau prospect</strong><small>Saisie libre</small></span>
+    </label>
+  `;
+  wrap.appendChild(modeSelector);
+
+  // === Bloc Client existant ===
+  const blocClient = el("div", {class:"remontee-bloc bloc-client"});
+  // Pré-sélectionner le client du cas en cours si pas de saisie ou saisie matchant
+  const refSelected = data.client_ref || (client && client.ref) || "";
+  const optionsHtml = STORE.clients.map(c =>
+    `<option value="${escapeHtml(c.ref)}" ${c.ref===refSelected?"selected":""}>${escapeHtml(c.ref)} — ${escapeHtml(clientLabel(c))}</option>`
+  ).join("");
+  blocClient.innerHTML = `
     <div class="form-field">
-      <label>Type</label>
-      <select name="type">
-        <option value="CLIENT" ${data.type==="CLIENT"?"selected":""}>Client</option>
-        <option value="PROSPECT" ${data.type==="PROSPECT"?"selected":""}>Prospect</option>
+      <label>Sélectionnez le client dans la base</label>
+      <select name="client_ref" class="remontee-select">
+        <option value="">— Choisir un client —</option>
+        ${optionsHtml}
       </select>
     </div>
+    <div class="remontee-client-info" id="remonteeClientInfo"></div>
+  `;
+  wrap.appendChild(blocClient);
+
+  // === Bloc Nouveau prospect ===
+  const blocProspect = el("div", {class:"remontee-bloc bloc-prospect"});
+  blocProspect.innerHTML = `
+    <div class="grid-2">
+      <div class="form-field">
+        <label>Nom / raison sociale</label>
+        <input type="text" name="prospect_nom" value="${escapeHtml(data.prospect_nom||"")}" placeholder="Ex : DUPONT ou SARL DURAND">
+      </div>
+      <div class="form-field">
+        <label>Prénom</label>
+        <input type="text" name="prospect_prenom" value="${escapeHtml(data.prospect_prenom||"")}">
+      </div>
+      <div class="form-field">
+        <label>Téléphone</label>
+        <input type="tel" name="prospect_tel" value="${escapeHtml(data.prospect_tel||"")}">
+      </div>
+      <div class="form-field">
+        <label>E-mail</label>
+        <input type="email" name="prospect_mail" value="${escapeHtml(data.prospect_mail||"")}">
+      </div>
+      <div class="form-field" style="grid-column: span 2">
+        <label>Ville / société d'activité (optionnel)</label>
+        <input type="text" name="prospect_ville" value="${escapeHtml(data.prospect_ville||"")}">
+      </div>
+    </div>
+  `;
+  wrap.appendChild(blocProspect);
+
+  // === Canal + description ===
+  const grid = el("div", {class:"grid-1 mt-2"});
+  grid.innerHTML = `
     <div class="form-field">
       <label>Canal de la demande</label>
       <select name="canal">
@@ -4257,13 +5014,9 @@ function buildRemonteeClient(client, cas, data){
         <option value="TCHAT" ${data.canal==="TCHAT"?"selected":""}>Tchat</option>
         <option value="EMAIL" ${data.canal==="EMAIL"?"selected":""}>Email</option>
         <option value="COURRIER" ${data.canal==="COURRIER"?"selected":""}>Courrier</option>
+        <option value="SMS" ${data.canal==="SMS"?"selected":""}>SMS</option>
       </select>
     </div>
-  `;
-  wrap.appendChild(grid);
-
-  const grid2 = el("div", {class:"grid-1 mt-1"});
-  grid2.innerHTML = `
     <div class="form-field">
       <label>Description de la demande</label>
       <textarea name="description" rows="3">${escapeHtml(data.description||"")}</textarea>
@@ -4277,7 +5030,39 @@ function buildRemonteeClient(client, cas, data){
       <textarea name="commentaires" rows="2">${escapeHtml(data.commentaires||"")}</textarea>
     </div>
   `;
-  wrap.appendChild(grid2);
+  wrap.appendChild(grid);
+
+  // --- Comportement dynamique ---
+  function applyMode(mode){
+    blocClient.style.display = (mode === "CLIENT") ? "block" : "none";
+    blocProspect.style.display = (mode === "PROSPECT") ? "block" : "none";
+    wrap.querySelectorAll(".mode-radio").forEach(l => {
+      l.classList.toggle("active", l.querySelector("input").value === mode);
+    });
+  }
+  function refreshClientInfo(){
+    const sel = wrap.querySelector('[name="client_ref"]');
+    const ref = sel ? sel.value : "";
+    const c = STORE.clients.find(x => x.ref === ref);
+    const box = wrap.querySelector("#remonteeClientInfo");
+    if(!c){ box.innerHTML = ""; return; }
+    const ci = clientInfo(c);
+    const adr = [ci.adresse, [ci.cp, ci.ville].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+    box.innerHTML = `
+      <div class="well text-small mt-1">
+        <strong>${escapeHtml(clientLabel(c))}</strong> · <span class="badge-pill ${ci.journee===2?'pill-orange-mini':'pill-navy-mini'}">J${ci.journee}</span><br>
+        ${ci.fonction ? '<small>' + escapeHtml(ci.fonction) + '</small><br>' : ''}
+        ${escapeHtml(adr || "—")}<br>
+        <small>${ci.fixe ? "<strong>Tél. :</strong> " + escapeHtml(ci.fixe) : ""}${ci.mail ? " · <strong>E-mail :</strong> " + escapeHtml(ci.mail) : ""}</small>
+      </div>
+    `;
+  }
+
+  applyMode(initialMode);
+  refreshClientInfo();
+  wrap.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener("change", e => applyMode(e.target.value)));
+  const sel = wrap.querySelector('[name="client_ref"]');
+  if(sel) sel.addEventListener("change", refreshClientInfo);
 
   return wrap;
 }
