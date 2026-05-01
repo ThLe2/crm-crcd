@@ -1092,6 +1092,47 @@ textarea{min-height:80px;resize:vertical}
   font-size:.88rem;line-height:1.5;color:var(--text);
 }
 
+/* ============== ONGLETS DANS LA MODALE OUTIL ============== */
+.outil-tabs{
+  display:flex;gap:.25rem;
+  border-bottom:2px solid var(--border);
+  margin:.5rem 0 1rem 0;
+}
+.outil-tab{
+  background:transparent;border:none;
+  padding:.7rem 1.25rem;cursor:pointer;
+  font-family:inherit;font-size:.95rem;font-weight:600;
+  color:var(--text-muted);
+  border-bottom:3px solid transparent;
+  margin-bottom:-2px;
+  transition:all .15s;
+}
+.outil-tab:hover{color:var(--tmk-navy)}
+.outil-tab.active{
+  color:var(--tmk-navy);
+  border-bottom-color:var(--tmk-orange);
+}
+.outil-pane{display:none}
+.outil-pane.active{display:block}
+
+.ref-subtabs{
+  display:flex;gap:.3rem;flex-wrap:wrap;
+  background:#f5f6fa;border-radius:8px;
+  padding:.3rem;margin-bottom:.85rem;
+}
+.ref-subtab{
+  background:transparent;border:none;
+  padding:.5rem .9rem;cursor:pointer;border-radius:6px;
+  font-family:inherit;font-size:.85rem;font-weight:600;
+  color:var(--text-muted);transition:all .15s;
+}
+.ref-subtab:hover{background:rgba(255,255,255,.6);color:var(--tmk-navy)}
+.ref-subtab.active{
+  background:#fff;color:var(--tmk-navy);
+  box-shadow:0 1px 3px rgba(0,0,0,.08);
+}
+.ref-content{min-height:200px}
+
 /* CGV */
 .cgv-section{
   border-bottom:1px solid var(--border);
@@ -4300,8 +4341,11 @@ function clientPanel(client, options){
 function openOutil(outil){
   const session = STATE.currentSession;
   if(!session) return;
-  const cas = STATE.currentCase;
-  const client = STORE.clients.find(c => c.ref === cas.client_ref) || null;
+  // STATE.currentCase est le num_appel (string), pas l'objet — on récupère l'objet ici
+  const numAppel = STATE.currentCase;
+  const cas = STORE.cas.find(c => c.num_appel === numAppel) || null;
+  // Le lien cas → client se fait par num_appel === client.ref (les 48 cas suivent cette règle)
+  const client = STORE.clients.find(c => c.ref === numAppel) || null;
   session.outils = session.outils || {};
   const data = session.outils[outil.id] || {};
 
@@ -4312,13 +4356,71 @@ function openOutil(outil){
     wrapper.appendChild(clientPanel(client, {open: false, showMission: false}));
   }
 
-  // Construction du formulaire spécifique
+  // === Onglets : Outil / Références ===
+  const tabBar = el("div", {class:"outil-tabs"});
+  tabBar.innerHTML = `
+    <button class="outil-tab active" data-pane="outil" type="button">🛠 ${escapeHtml(outil.titre)}</button>
+    <button class="outil-tab" data-pane="ref" type="button">📚 Références</button>
+  `;
+  wrapper.appendChild(tabBar);
+
+  // Pane outil (le formulaire spécifique)
+  const paneOutil = el("div", {class:"outil-pane active", "data-pane":"outil"});
   const form = outil.builder(client, cas, data);
-  wrapper.appendChild(form);
+  paneOutil.appendChild(form);
+  wrapper.appendChild(paneOutil);
+
+  // Pane références (chargé à la demande, et seulement à la 1ère bascule)
+  const paneRef = el("div", {class:"outil-pane", "data-pane":"ref"});
+  const refTabs = el("div", {class:"ref-subtabs"});
+  refTabs.innerHTML = `
+    <button class="ref-subtab active" data-ref="infos" type="button">📚 Infos</button>
+    <button class="ref-subtab" data-ref="catalogue" type="button">🛞 Catalogue</button>
+    <button class="ref-subtab" data-ref="cgv" type="button">📄 CGV</button>
+    <button class="ref-subtab" data-ref="centres" type="button">📍 Centres</button>
+  `;
+  paneRef.appendChild(refTabs);
+  const refContent = el("div", {class:"ref-content"});
+  paneRef.appendChild(refContent);
+  wrapper.appendChild(paneRef);
+
+  // Cache du contenu déjà rendu (économise un peu de DOM)
+  const refCache = {};
+  function showRef(which){
+    refTabs.querySelectorAll(".ref-subtab").forEach(b => b.classList.toggle("active", b.dataset.ref === which));
+    if(!refCache[which]){
+      const cnt = el("div", {});
+      if(which === "infos") renderInfosLite(cnt);
+      else if(which === "catalogue") renderCatalogueLite(cnt);
+      else if(which === "cgv") renderCgvLite(cnt);
+      else if(which === "centres") renderCentresLite(cnt);
+      refCache[which] = cnt;
+    }
+    refContent.innerHTML = "";
+    refContent.appendChild(refCache[which]);
+  }
+  refTabs.querySelectorAll(".ref-subtab").forEach(b => {
+    b.addEventListener("click", () => showRef(b.dataset.ref));
+  });
+
+  // Bascule entre Outil et Références
+  let refLoaded = false;
+  tabBar.querySelectorAll(".outil-tab").forEach(b => {
+    b.addEventListener("click", () => {
+      tabBar.querySelectorAll(".outil-tab").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      wrapper.querySelectorAll(".outil-pane").forEach(p => p.classList.toggle("active", p.dataset.pane === b.dataset.pane));
+      if(b.dataset.pane === "ref" && !refLoaded){
+        showRef("infos");
+        refLoaded = true;
+      }
+    });
+  });
 
   // Boutons
   const saveBtn = el("button", {class:"btn orange", type:"button", onclick: () => {
-    const result = readOutilForm(outil.id, wrapper);
+    // Lecture restreinte au pane outil pour ne pas capter les inputs des références (ex: search)
+    const result = readOutilForm(outil.id, paneOutil);
     session.outils[outil.id] = result;
     saveStore();
     closeModal();
@@ -4564,7 +4666,7 @@ function buildReglement(client, cas, data){
     </div>
     <div class="form-field">
       <label>Référence facture / BDC</label>
-      <input type="text" name="ref_doc" value="${escapeHtml(data.ref_doc || (cas?.client_ref || ""))}">
+      <input type="text" name="ref_doc" value="${escapeHtml(data.ref_doc || (cas?.num_appel || ""))}">
     </div>
   `;
   wrap.appendChild(grid);
